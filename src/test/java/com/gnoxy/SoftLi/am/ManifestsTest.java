@@ -42,7 +42,7 @@ public class ManifestsTest {
 
     @Test
     public void testGetSwReleaseIds() {
-        System.out.println("getBinaryIds");
+        System.out.println("getSwReleaseIds");
         Manifest manifest = manifests.getManifest("I-1");
         Set<String> binaryIDs = manifest.getSwReleaseIDs();
         assertEquals(true, binaryIDs.contains("50"));

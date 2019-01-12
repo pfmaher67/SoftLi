@@ -91,7 +91,7 @@ public class Initializer {
     public static LicenseRights getLicenseRights() {
         LicenseRights sli = new LicenseRights();
         sli.addRight("1", "50", 32);
-        sli.addRight("2", "50", 16);
+        sli.addRight("2", "50", 64);
         sli.addRight("2", "54", 16);
         sli.addRight("3", "52", 3);
         return sli;

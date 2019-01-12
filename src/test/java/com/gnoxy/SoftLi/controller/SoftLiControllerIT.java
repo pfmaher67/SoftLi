@@ -61,7 +61,7 @@ public class SoftLiControllerIT {
 
     @Test
     public void testListRights() throws Exception {
-        System.out.println("Testing /listRights");
+        System.out.println("Integration Testing /listRights");
         mockMvc.perform(get("/listRights").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("*.swReleaseID", hasItem(is("54"))));

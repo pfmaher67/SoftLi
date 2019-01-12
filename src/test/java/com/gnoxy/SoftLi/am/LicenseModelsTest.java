@@ -53,7 +53,6 @@ public class LicenseModelsTest {
     public void testGetModel() {
         System.out.println("getModel");
 
-        System.out.println("testModels");
         LicenseModel model = models.getModel("50");
         assertEquals("50", model.getID());
         assertEquals(LicenseMetric.VCPU, model.getLicenseMetric());

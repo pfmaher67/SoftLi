@@ -13,48 +13,66 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package com.gnoxy.SoftLi.am;
+
+import java.util.ArrayList;
 
 /**
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
 public class StatusMessage {
+
     public static final int SUCCESS = 0;
     public static final int FAILURE = 1;
 
-    private final int status;
-    private final String message;
-    private LicenseRight slr;
-    
+    private int status;
+    private String message;
+    private ArrayList<StatusMessageElement> elements;
+
+    public StatusMessage() {
+        status = FAILURE;
+        message = "";
+        elements = new ArrayList<>();
+    }
+
     public StatusMessage(int status, String message) {
         this.status = status;
         this.message = message;
-        slr = null;
+        elements = new ArrayList<>();
     }
-    
-        public StatusMessage(int status, String message, LicenseRight slr) {
+
+    public StatusMessage(int status, String message, StatusMessageElement element) {
         this.status = status;
         this.message = message;
-        this.slr = slr;
+        if (elements == null) {
+            elements = new ArrayList<>();
+        }
+        elements.add(element);
     }
-        public int getStatus() {
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getStatus() {
         return status;
     }
-    
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public String getMessage() {
         return message;
     }
-    
-    public void setSoftwareLicenseRight(LicenseRight slr) {
-        this.slr = slr;
+
+    public void setElement(StatusMessageElement element) {
+        elements.add(element);
     }
-    
-    public LicenseRight getSoftwareLicenseRight() {
-        return slr;
+
+    public ArrayList<StatusMessageElement> getElements() {
+        return elements;
     }
-    
 
 }

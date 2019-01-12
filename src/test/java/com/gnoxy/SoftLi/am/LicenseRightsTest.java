@@ -57,14 +57,14 @@ public class LicenseRightsTest {
     
     @Test
     public void testReserveRightsSuccess() {
-        System.out.println("reserveRights: Success");
+        System.out.println("reserveRights: Available");
         StatusMessage result = licenseRights.reserveRights("2", "I-3", 8, 512, 1);
         assertEquals(0, result.getStatus());
     }
     
     @Test
     public void testReserveRightsFail() {
-        System.out.println("reserveRights: Fail");
+        System.out.println("reserveRights: Unavailable");
         StatusMessage result = licenseRights.reserveRights("2", "I-3", 24, 512, 1);
         assertEquals(1, result.getStatus());
 
@@ -76,7 +76,6 @@ public class LicenseRightsTest {
         HashMap<String, LicenseRight> expResult = null;
         HashMap<String, LicenseRight> result = licenseRights.getSoftwareLicenseRights();
         assertEquals(4, result.size());
-        System.out.println("Rights:\n" + result);
     }
 
 }
