@@ -1,0 +1,6 @@
+sspring:
+  application:
+    name: SoftLiYaml
+
+am:
+  database: AppDB-QA

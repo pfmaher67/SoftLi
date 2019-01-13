@@ -50,8 +50,12 @@ public class LicenseRights {
         String slrKey;
         long quantity;
         // From the image id, check the manifest and get all the Software Release IDs associated with the image
-        Set<String> swReleaseIDs = manifests.getManifest(imageID).getSwReleaseIDs();
-        if (!swReleaseIDs.isEmpty()) {
+        Manifest m = manifests.getManifest(imageID);
+        Set<String> swReleaseIDs = null;
+        if (m != null) {
+            swReleaseIDs = manifests.getManifest(imageID).getSwReleaseIDs();
+        }
+        if (swReleaseIDs != null && !swReleaseIDs.isEmpty()) {
             boolean rightsAvailable = true;
             statusMessage.setMessage("App ID = " + appID);
             // First check each swReleaseID to see if the App has enough rights to set
@@ -71,9 +75,9 @@ public class LicenseRights {
 
                     if (!slr.hasAvailableRights(quantity)) {
                         rightsAvailable = false;
-                        statusMessage.setElement(new StatusMessageElement("Rights are not available for: ", slr));
+                        statusMessage.setElement(new StatusMessageElement("Rights are not available for: ", slr.copy()));
                     } else {
-                        statusMessage.setElement(new StatusMessageElement("Rights are available for: ", slr));
+                        statusMessage.setElement(new StatusMessageElement("Rights are available for: ", slr.copy()));
                     }
                 } else {
                     // !licenseRights.containsKey(slrKey)

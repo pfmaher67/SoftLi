@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: SoftLi - TESTING
+
+am:
+  database: AppTestDBProxy
+  
+
+  
+software-model-values:
+  softwareModelTemplates:
+    -
+      id: 'M-1'
+      metric: 'vCPU'
+      category: 'Application'
+    -
+      id: 'M-2'
+      metric: 'Instance'
+      category: 'Infrastructure'
+    -
+      id: 'M-3'
+      metric: 'Instance'
+      category: 'Infrastructure'
+

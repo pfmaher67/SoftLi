@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package com.gnoxy.SoftLi.controller;
 
 import com.gnoxy.SoftLi.Initializer;
 import com.gnoxy.SoftLi.am.LicenseRight;
 import com.gnoxy.SoftLi.am.StatusMessage;
 import com.gnoxy.SoftLi.am.LicenseRights;
+import com.gnoxy.SoftLi.init.SoftwareModelsInitializer;
+import com.gnoxy.SoftLi.init.SoftwareModelsInitializer.SoftwareModelTemplate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,9 +41,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SoftLiController {
 
     private LicenseRights licenseRights;
+    @Value("${spring.application.name}")
+    private String appName;
+    @Value("${am.database}")
+    private String db;
 
+    @Autowired
+    private SoftwareModelsInitializer smi;
 
-    
     @RequestMapping("/reserveRights")
     @ResponseBody
     public StatusMessage reserve(@RequestParam(value = "appID", defaultValue = "0") String appID,
@@ -56,7 +66,7 @@ public class SoftLiController {
             @RequestParam(value = "quantity", defaultValue = "0") String quantity) {
         return licenseRights.addRight(appID, swReleaseID, Long.parseLong(quantity));
     }
-    
+
     @RequestMapping("/listRights")
     public HashMap<String, LicenseRight> list() {
         return licenseRights.getSoftwareLicenseRights();
@@ -65,5 +75,13 @@ public class SoftLiController {
     @PostConstruct
     public void init() {
         licenseRights = Initializer.getLicenseRights();
+        System.out.println("Running application: " + appName);
+        System.out.println("Using Repository: " + db);
+
+        List<SoftwareModelTemplate> l = smi.getSoftwareModelTemplates();
+        Iterator<SoftwareModelTemplate> i = l.iterator();
+        while(i.hasNext()) {
+            System.out.println("Initializer " + i.next().getId()); 
+        }        
     }
 }

@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package com.gnoxy.SoftLi.am;
 
 import com.gnoxy.SoftLi.Initializer;
+import com.gnoxy.SoftLi.init.SoftwareModelsInitializer;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -31,6 +31,9 @@ import static org.junit.Assert.*;
 public class LicenseModelsTest {
 
     private LicenseModels models;
+
+    @Autowired
+    private SoftwareModelsInitializer smi;
 
     public LicenseModelsTest() {
     }
@@ -46,8 +49,13 @@ public class LicenseModelsTest {
     @Before
     public void setUp() {
         models = Initializer.getLicenseModels();
+        System.out.println("Testing Models, Initializing SMI");
+        if (smi == null) {
+            System.out.println("SMI is null");
+        } else {
+            LicenseModels m = smi.getLicenseModels();
+        }
     }
-
 
     @Test
     public void testGetModel() {
@@ -64,6 +72,8 @@ public class LicenseModelsTest {
         assertEquals(LicenseMetric.INSTANCE, model.getLicenseMetric());
         assertEquals(SoftwareCategory.INFRASTRUCTURE,
                 model.getSoftwareCategory());
+
+
     }
 
 }

@@ -75,5 +75,14 @@ public class LicenseRight {
         }
     }
     
+    public LicenseRight copy() {
+        LicenseRight l = new LicenseRight(
+                this.appID,
+                this.swReleaseID,
+                this.qtyOwned
+        );
+        l.reserveRights(qtyReserved);
+        return l;
+    }
 
 }
