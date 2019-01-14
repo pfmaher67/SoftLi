@@ -17,7 +17,9 @@
 
 package com.gnoxy.SoftLi.am;
 
-import com.gnoxy.SoftLi.Initializer;
+import com.gnoxy.SoftLi.init.LicenseModelsInitializer;
+import com.gnoxy.SoftLi.init.LicenseRightsInitializer;
+import com.gnoxy.SoftLi.init.ManifestsInitializer;
 import java.util.HashMap;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -25,14 +27,29 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class LicenseRightsTest {
 
     LicenseRights licenseRights;
+    
+    @Autowired
+    LicenseRightsInitializer lri;
+    
+    @Autowired
+    LicenseModelsInitializer lmi;
+    
+    @Autowired
+    ManifestsInitializer mi;
     
 
     public LicenseRightsTest() {
@@ -48,7 +65,12 @@ public class LicenseRightsTest {
 
     @Before
     public void setUp() {
-        licenseRights = Initializer.getLicenseRights();
+        LicenseModels lm = new LicenseModels();
+        lm.init(lmi);
+        Manifests m = new Manifests(lm);
+        m.init(mi);
+        licenseRights = new LicenseRights(lm, m);
+        licenseRights.init(lri);
     }
 
     @After
@@ -57,22 +79,21 @@ public class LicenseRightsTest {
     
     @Test
     public void testReserveRightsSuccess() {
-        System.out.println("reserveRights: Available");
-        StatusMessage result = licenseRights.reserveRights("2", "I-3", 8, 512, 1);
+        System.out.println("\n\nTesting: reserveRights: Available");
+        StatusMessage result = licenseRights.reserveRights("A-2", "I-3", 8, 512, 1);
         assertEquals(0, result.getStatus());
     }
     
     @Test
     public void testReserveRightsFail() {
-        System.out.println("reserveRights: Unavailable");
-        StatusMessage result = licenseRights.reserveRights("2", "I-3", 24, 512, 1);
+        System.out.println("\n\nTesting: reserveRights: Unavailable");
+        StatusMessage result = licenseRights.reserveRights("A-2", "I-3", 24, 512, 1);
         assertEquals(1, result.getStatus());
-
     }
     
     @Test
     public void testGetSoftwareLicenseRights() {
-        System.out.println("getSoftwareLicenseRights");
+        System.out.println("\n\nTesting: getSoftwareLicenseRights");
         HashMap<String, LicenseRight> expResult = null;
         HashMap<String, LicenseRight> result = licenseRights.getSoftwareLicenseRights();
         assertEquals(4, result.size());

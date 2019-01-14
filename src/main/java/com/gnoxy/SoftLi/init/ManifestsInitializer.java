@@ -15,9 +15,7 @@
  */
 package com.gnoxy.SoftLi.init;
 
-import com.gnoxy.SoftLi.am.LicenseModels;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -27,60 +25,39 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
-@ConfigurationProperties(prefix = "software-model-values")
+@ConfigurationProperties(prefix = "manifest-values")
 @EnableConfigurationProperties
 @Configuration
-public class SoftwareModelsInitializer {
+public class ManifestsInitializer {
 
-    private final List<SoftwareModelTemplate> softwareModelTemplates = new ArrayList<>();
+    private final List<ManifestTemplate> manifestTemplates = new ArrayList<>();
 
-    public SoftwareModelsInitializer() {
-        System.out.println("Inside SoftwareModelsInitializer");
 
+    public ManifestsInitializer() {
     }
 
-    public List<SoftwareModelTemplate> getSoftwareModelTemplates() {
-        System.out.println("...Inside SoftwareModelInitializers, size: " + softwareModelTemplates.size());
-        return this.softwareModelTemplates;
+    public List<ManifestTemplate> getManifestTemplates() {
+        return this.manifestTemplates;
     }
     
-    public LicenseModels getLicenseModels() {
-        System.out.println("Inside getLicenseModels");
-        LicenseModels l = new LicenseModels();
-        Iterator<SoftwareModelTemplate> i = this.getSoftwareModelTemplates().iterator();
-        while(i.hasNext()) {
-            System.out.println("getLicenseModels: Model " + i.next().getId()); 
-        }         
-        return l;
-    }
-
-    public static class SoftwareModelTemplate {
-        private String id;
-        private String metric;
-        private String category;
+    public static class ManifestTemplate {
+        private String imageId;
+        private String swReleaseId;
         
-        public void setID(String id) {
-            System.out.println("Setting id: " + id);
-            this.id = id;
+        public void setImageId(String imageId) {
+            this.imageId = imageId;
         }
-        public String getId() {
-            return id;
+        public String getImageId() {
+            return imageId;
         }
         
-        public void setMetric(String metric) {
-            this.metric = metric;
+        public void setSwReleaseId(String swReleaseId) {
+            this.swReleaseId = swReleaseId;
         }
-        public String getMetric() {
-            return metric;
-        }
-        
-        public void setCategory(String category) {
-            this.category = category;
-        }
-        public String getCategory() {
-            return category;
+        public String getSwReleaseId() {
+            return swReleaseId;
         }
         
-    }  // End SoftwareModelInitiator
+    }  // End ManifestTemplate
 
 } 

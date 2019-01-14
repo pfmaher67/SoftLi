@@ -17,17 +17,30 @@
 
 package com.gnoxy.SoftLi.am;
 
-import com.gnoxy.SoftLi.Initializer;
+import com.gnoxy.SoftLi.init.LicenseModelsInitializer;
+import com.gnoxy.SoftLi.init.ManifestsInitializer;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ManifestsTest {
+
+    @Autowired
+    private LicenseModelsInitializer lmi;
+
+    @Autowired
+    private ManifestsInitializer mi;
     
     public Manifests manifests;
     
@@ -36,18 +49,21 @@ public class ManifestsTest {
     
     @Before
     public void setUp() {
-        manifests = Initializer.getManifests();
+        LicenseModels models = new LicenseModels();
+        models.init(lmi);
+        manifests = new Manifests(models);
+        manifests.init(mi);
     }
 
 
     @Test
     public void testGetSwReleaseIds() {
-        System.out.println("getSwReleaseIds");
+        System.out.println("\n\nTesting: getSwReleaseIds");
         Manifest manifest = manifests.getManifest("I-1");
         Set<String> binaryIDs = manifest.getSwReleaseIDs();
-        assertEquals(true, binaryIDs.contains("50"));
-        assertEquals(true, binaryIDs.contains("51"));
-        assertEquals(true, binaryIDs.contains("53"));
+        assertEquals(true, binaryIDs.contains("TM-1"));
+        assertEquals(true, binaryIDs.contains("TM-2"));
+        assertEquals(true, binaryIDs.contains("TM-4"));
         assertEquals(3, binaryIDs.size());
 
     }

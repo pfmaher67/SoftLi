@@ -15,16 +15,15 @@
  */
 package com.gnoxy.SoftLi.controller;
 
-import com.gnoxy.SoftLi.Initializer;
+import com.gnoxy.SoftLi.am.LicenseModels;
 import com.gnoxy.SoftLi.am.LicenseRight;
 import com.gnoxy.SoftLi.am.StatusMessage;
 import com.gnoxy.SoftLi.am.LicenseRights;
-import com.gnoxy.SoftLi.init.SoftwareModelsInitializer;
-import com.gnoxy.SoftLi.init.SoftwareModelsInitializer.SoftwareModelTemplate;
-import java.util.ArrayList;
+import com.gnoxy.SoftLi.am.Manifests;
+import com.gnoxy.SoftLi.init.LicenseModelsInitializer;
+import com.gnoxy.SoftLi.init.LicenseRightsInitializer;
+import com.gnoxy.SoftLi.init.ManifestsInitializer;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +46,13 @@ public class SoftLiController {
     private String db;
 
     @Autowired
-    private SoftwareModelsInitializer smi;
+    private LicenseModelsInitializer lmi;
+    
+    @Autowired
+    private ManifestsInitializer mi;
+    
+    @Autowired
+    private LicenseRightsInitializer lri;
 
     @RequestMapping("/reserveRights")
     @ResponseBody
@@ -74,14 +79,15 @@ public class SoftLiController {
 
     @PostConstruct
     public void init() {
-        licenseRights = Initializer.getLicenseRights();
+        LicenseModels models = new LicenseModels();
+        models.init(lmi);
+        Manifests manifests = new Manifests(models);
+        manifests.init(mi);
+        licenseRights = new LicenseRights(models, manifests);
+        licenseRights.init(lri);        
+        
         System.out.println("Running application: " + appName);
         System.out.println("Using Repository: " + db);
-
-        List<SoftwareModelTemplate> l = smi.getSoftwareModelTemplates();
-        Iterator<SoftwareModelTemplate> i = l.iterator();
-        while(i.hasNext()) {
-            System.out.println("Initializer " + i.next().getId()); 
-        }        
+                        
     }
 }

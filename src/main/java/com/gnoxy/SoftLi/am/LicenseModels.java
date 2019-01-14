@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package com.gnoxy.SoftLi.am;
 
+import com.gnoxy.SoftLi.init.LicenseModelsInitializer;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  *
  * @author Patrick Maher<dev@gnoxy.com>
- * 
- * Contains a list of License Models in play for 
+ *
+ * Contains a list of License Models in play for
  */
 public class LicenseModels {
 
@@ -32,16 +33,33 @@ public class LicenseModels {
     public LicenseModels() {
         modelsMap = new HashMap<>();
     }
-    
+
     public void addModel(LicenseModel l) {
         String id = l.getID();
         if (!modelsMap.containsKey(id)) {
             modelsMap.put(id, l);
         }
     }
-    
+
     public LicenseModel getModel(String id) {
         return modelsMap.get(id);
+    }
+
+    public void init(LicenseModelsInitializer lmi) {
+        List<LicenseModelsInitializer.LicenseModelTemplate> l = lmi.getLicenseModelTemplates();
+        Iterator<LicenseModelsInitializer.LicenseModelTemplate> i = l.iterator();
+        while (i.hasNext()) {
+            LicenseModelsInitializer.LicenseModelTemplate t = i.next();
+            LicenseModel model = t.getModel();
+            System.out.println("LicenseModels init() " + model.getID()
+                    + " : " + model.getLicenseMetric().getDescription()
+                    + " : " + model.getSoftwareCategory().getDescription());
+            String id = model.getID();
+            if (!modelsMap.containsKey(id)) {
+                modelsMap.put(id, model);
+            }
+        }
+
     }
 
 }

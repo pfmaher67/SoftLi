@@ -15,9 +15,10 @@
  */
 package com.gnoxy.SoftLi.init;
 
-import com.gnoxy.SoftLi.am.LicenseModels;
+import com.gnoxy.SoftLi.am.LicenseMetric;
+import com.gnoxy.SoftLi.am.LicenseModel;
+import com.gnoxy.SoftLi.am.SoftwareCategory;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -27,60 +28,75 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
-@ConfigurationProperties(prefix = "software-model-values")
+@ConfigurationProperties(prefix = "license-model-values")
 @EnableConfigurationProperties
 @Configuration
-public class SoftwareModelsInitializer {
+public class LicenseModelsInitializer {
 
-    private final List<SoftwareModelTemplate> softwareModelTemplates = new ArrayList<>();
+    private final List<LicenseModelTemplate> licenseModelTemplates = new ArrayList<>();
 
-    public SoftwareModelsInitializer() {
-        System.out.println("Inside SoftwareModelsInitializer");
-
+    public LicenseModelsInitializer() {
     }
 
-    public List<SoftwareModelTemplate> getSoftwareModelTemplates() {
-        System.out.println("...Inside SoftwareModelInitializers, size: " + softwareModelTemplates.size());
-        return this.softwareModelTemplates;
-    }
-    
-    public LicenseModels getLicenseModels() {
-        System.out.println("Inside getLicenseModels");
-        LicenseModels l = new LicenseModels();
-        Iterator<SoftwareModelTemplate> i = this.getSoftwareModelTemplates().iterator();
-        while(i.hasNext()) {
-            System.out.println("getLicenseModels: Model " + i.next().getId()); 
-        }         
-        return l;
+    public List<LicenseModelTemplate> getLicenseModelTemplates() {
+        return this.licenseModelTemplates;
     }
 
-    public static class SoftwareModelTemplate {
+    public static class LicenseModelTemplate {
+
         private String id;
         private String metric;
         private String category;
-        
+
         public void setID(String id) {
-            System.out.println("Setting id: " + id);
             this.id = id;
         }
+
         public String getId() {
             return id;
         }
-        
+
         public void setMetric(String metric) {
             this.metric = metric;
         }
+
         public String getMetric() {
             return metric;
         }
-        
+
         public void setCategory(String category) {
             this.category = category;
         }
+
         public String getCategory() {
             return category;
         }
-        
-    }  // End SoftwareModelInitiator
 
-} 
+        public LicenseModel getModel() {
+            return new LicenseModel(
+                    id,
+                    findLicenseMetric(metric),
+                    findCategory(category)
+            );
+        }
+
+        private LicenseMetric findLicenseMetric(String m) {
+            if (m.equals(LicenseMetric.VCPU.getDescription())) {
+                return LicenseMetric.VCPU;
+            }
+            if (m.equals(LicenseMetric.INSTANCE.getDescription())) {
+                return LicenseMetric.INSTANCE;
+            }
+            return LicenseMetric.RAM;
+        }
+
+        private SoftwareCategory findCategory(String c) {
+            if (c.equals(SoftwareCategory.APPLICATION.getDescription())) {
+                return SoftwareCategory.APPLICATION;
+            }
+            return SoftwareCategory.INFRASTRUCTURE;
+        }
+
+    }  // End LicenseModelTemplate
+
+}

@@ -61,10 +61,10 @@ public class SoftLiControllerIT {
 
     @Test
     public void testListRights() throws Exception {
-        System.out.println("Integration Testing /listRights");
+        System.out.println("\n\nIntegration Testing /listRights\n\n");
         mockMvc.perform(get("/listRights").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("*.swReleaseID", hasItem(is("54"))));
+                .andExpect(jsonPath("*.swReleaseID", hasItem(is("TM-5"))));
     }
 
 //    @Test

@@ -15,8 +15,10 @@
  */
 package com.gnoxy.SoftLi.am;
 
-import com.gnoxy.SoftLi.Initializer;
+import com.gnoxy.SoftLi.init.LicenseRightsInitializer;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -31,10 +33,25 @@ public class LicenseRights {
     private final Manifests manifests;
     private final LicenseModels models;
 
-    public LicenseRights() {
+    public LicenseRights(LicenseModels models, Manifests manifests) {
         rights = new HashMap<>();
-        manifests = Initializer.getManifests();  // temporary measure
-        models = Initializer.getLicenseModels();
+//        manifests = Initializer.getManifests();  // temporary measure
+//        models = Initializer.getLicenseModels();
+        this.models = models;
+        this.manifests = manifests;
+    }
+
+    public void init(LicenseRightsInitializer lri) {
+        List<LicenseRightsInitializer.LicenseRightTemplate> l = lri.getLicenseRightTemplates();
+        Iterator<LicenseRightsInitializer.LicenseRightTemplate> i = l.iterator();
+        while (i.hasNext()) {
+            LicenseRightsInitializer.LicenseRightTemplate t = i.next();
+            System.out.println("LicenseRights init(): Adding right: "
+                    + addRight(t.getAppId(), t.getModelId(), Long.valueOf(t.getQuantity())).getMessage()
+                    + " : " + t.getAppId()
+                    + " : " + t.getModelId()
+                    + " : " + t.getQuantity());
+        }
     }
 
     public StatusMessage addRight(String appID, String swReleaseID, long quantity) {
@@ -113,6 +130,7 @@ public class LicenseRights {
                     }
                 }
                 statusMessage.setStatus(StatusMessage.SUCCESS);
+                statusMessage.setMessage(statusMessage.getMessage().concat(". Rights successfully reserved"));
             } else {
                 // !rightsAvailable
                 statusMessage.setMessage("Rights are not available for all titles ");

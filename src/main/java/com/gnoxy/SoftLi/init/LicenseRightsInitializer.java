@@ -15,9 +15,7 @@
  */
 package com.gnoxy.SoftLi.init;
 
-import com.gnoxy.SoftLi.am.LicenseModels;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -27,60 +25,47 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
-@ConfigurationProperties(prefix = "software-model-values")
+@ConfigurationProperties(prefix = "license-rights-values")
 @EnableConfigurationProperties
 @Configuration
-public class SoftwareModelsInitializer {
+public class LicenseRightsInitializer {
 
-    private final List<SoftwareModelTemplate> softwareModelTemplates = new ArrayList<>();
+    private final List<LicenseRightTemplate> licenseRightTemplates = new ArrayList<>();
 
-    public SoftwareModelsInitializer() {
-        System.out.println("Inside SoftwareModelsInitializer");
 
+    public LicenseRightsInitializer() {
     }
 
-    public List<SoftwareModelTemplate> getSoftwareModelTemplates() {
-        System.out.println("...Inside SoftwareModelInitializers, size: " + softwareModelTemplates.size());
-        return this.softwareModelTemplates;
+    public List<LicenseRightTemplate> getLicenseRightTemplates() {
+        return this.licenseRightTemplates;
     }
     
-    public LicenseModels getLicenseModels() {
-        System.out.println("Inside getLicenseModels");
-        LicenseModels l = new LicenseModels();
-        Iterator<SoftwareModelTemplate> i = this.getSoftwareModelTemplates().iterator();
-        while(i.hasNext()) {
-            System.out.println("getLicenseModels: Model " + i.next().getId()); 
-        }         
-        return l;
-    }
-
-    public static class SoftwareModelTemplate {
-        private String id;
-        private String metric;
-        private String category;
+    public static class LicenseRightTemplate {
+        private String appId;
+        private String modelId;
+        private String quantity;
         
-        public void setID(String id) {
-            System.out.println("Setting id: " + id);
-            this.id = id;
+        public void setAppId(String appId) {
+            this.appId = appId;
         }
-        public String getId() {
-            return id;
+        public String getAppId() {
+            return appId;
         }
         
-        public void setMetric(String metric) {
-            this.metric = metric;
+        public void setModelId(String modelId) {
+            this.modelId = modelId;
         }
-        public String getMetric() {
-            return metric;
-        }
-        
-        public void setCategory(String category) {
-            this.category = category;
-        }
-        public String getCategory() {
-            return category;
+        public String getModelId() {
+            return modelId;
         }
         
-    }  // End SoftwareModelInitiator
+        public void setQuantity(String quantity) {
+            this.quantity = quantity;
+        }
+        public String getQuantity() {
+            return quantity;
+        }
+        
+    }  // End LicenseRightTemplate
 
 } 

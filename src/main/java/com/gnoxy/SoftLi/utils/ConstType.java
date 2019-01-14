@@ -7,7 +7,7 @@ import java.util.Enumeration;
 public class ConstType implements java.io.Serializable, Cloneable {
 
     private int value;
-    private transient String desc;
+    private String desc;
 
     // a hashtable of hashtables...
     private static final HashMap<String, HashMap> types = new HashMap<>();
@@ -98,6 +98,10 @@ public class ConstType implements java.io.Serializable, Cloneable {
 
     public int getValue() {
         return value;
+    }
+
+    public String getDescription() {
+        return desc;
     }
 
     public boolean equals(Object obj) {

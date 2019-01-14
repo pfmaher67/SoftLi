@@ -1,6 +1,83 @@
 spring:
   application:
-    name: SoftLiYaml
+    name: SoftLi
 
 am:
   database: AppDBProxy
+  
+  
+license-model-values:
+  licenseModelTemplates:
+    -
+      id: 'M-1'         # WAS ND
+      metric: 'vCPU'
+      category: 'Application'
+    -
+      id: 'M-2'         # RHEL
+      metric: 'Instance'
+      category: 'Infrastructure'
+    -
+      id: 'M-3'         # Mongo DB
+      metric: 'Instance'
+      category: 'Application'
+    -
+      id: 'M-4'         # Qualys
+      metric: 'Instance'
+      category: 'Infrastructure'
+    -
+      id: 'M-5'         # Kafka
+      metric: 'vCPU'
+      category: 'Application'
+      
+      
+license-rights-values:
+  licenseRightTemplates:
+    -
+      appId: 'A-1'
+      modelId: 'M-1'
+      quantity: '32'
+    -
+      appId: 'A-2'
+      modelId: 'M-1'
+      quantity: '16'
+    -
+      appId: 'A-2'
+      modelId: 'M-5'
+      quantity: '64'
+    -
+      appId: 'A-3'
+      modelId: 'M-3'
+      quantity: '3'
+
+manifest-values:
+  manifestTemplates:
+    -
+      imageId: 'I-1'
+      swReleaseId: 'M-1'
+    -
+      imageId: 'I-1'
+      swReleaseId: 'M-2'
+    -
+      imageId: 'I-1'
+      swReleaseId: 'M-4'
+    -
+      imageId: 'I-2'
+      swReleaseId: 'M-2'
+    -
+      imageId: 'I-2'
+      swReleaseId: 'M-4'
+    -
+      imageId: 'I-2'
+      swReleaseId: 'M-3'
+    -
+      imageId: 'I-3'
+      swReleaseId: 'M-1'
+    -
+      imageId: 'I-3'
+      swReleaseId: 'M-2'
+    -
+      imageId: 'I-3'
+      swReleaseId: 'M-4'
+    -
+      imageId: 'I-3'
+      swReleaseId: 'M-5'

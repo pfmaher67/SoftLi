@@ -15,25 +15,29 @@
  */
 package com.gnoxy.SoftLi.am;
 
-import com.gnoxy.SoftLi.Initializer;
-import com.gnoxy.SoftLi.init.SoftwareModelsInitializer;
+import com.gnoxy.SoftLi.init.LicenseModelsInitializer;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class LicenseModelsTest {
 
     private LicenseModels models;
 
     @Autowired
-    private SoftwareModelsInitializer smi;
+    private LicenseModelsInitializer lmi;
 
     public LicenseModelsTest() {
     }
@@ -48,32 +52,38 @@ public class LicenseModelsTest {
 
     @Before
     public void setUp() {
-        models = Initializer.getLicenseModels();
-        System.out.println("Testing Models, Initializing SMI");
-        if (smi == null) {
-            System.out.println("SMI is null");
+        models = new LicenseModels();
+        System.out.println("Testing Models, Initializing LMI");
+        if (lmi == null) {
+            System.out.println("LMI is null");
         } else {
-            LicenseModels m = smi.getLicenseModels();
+            System.out.println("LMI is good!");
+            models.init(lmi);
         }
     }
 
     @Test
     public void testGetModel() {
-        System.out.println("getModel");
+        System.out.println("\n\n Testing getModel\n\n");
 
-        LicenseModel model = models.getModel("50");
-        assertEquals("50", model.getID());
+
+        LicenseModel model = models.getModel("TM-1");
+        assertEquals("TM-1", model.getID());
         assertEquals(LicenseMetric.VCPU, model.getLicenseMetric());
         assertEquals(SoftwareCategory.APPLICATION,
                 model.getSoftwareCategory());
 
-        model = models.getModel("51");
-        assertEquals("51", model.getID());
+        model = models.getModel("TM-2");
+        assertEquals("TM-2", model.getID());
         assertEquals(LicenseMetric.INSTANCE, model.getLicenseMetric());
         assertEquals(SoftwareCategory.INFRASTRUCTURE,
                 model.getSoftwareCategory());
 
-
+        model = models.getModel("TM-3");
+        assertEquals("TM-3", model.getID());
+        assertEquals(LicenseMetric.INSTANCE, model.getLicenseMetric());
+        assertEquals(SoftwareCategory.APPLICATION,
+                model.getSoftwareCategory());
     }
 
 }
