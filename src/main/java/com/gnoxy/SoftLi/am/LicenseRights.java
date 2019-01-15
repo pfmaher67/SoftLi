@@ -142,6 +142,48 @@ public class LicenseRights {
         return statusMessage;
     }
 
+    public StatusMessage releaseRights(String appID, String imageID,
+            long vCPU, long ram, long instances) {
+        StatusMessage statusMessage = new StatusMessage();
+        String slrKey;
+        long quantity;
+        // From the image id, check the manifest and get all the Software Release IDs associated with the image
+        Manifest m = manifests.getManifest(imageID);
+        Set<String> swReleaseIDs = null;
+        if (m != null) {
+            swReleaseIDs = manifests.getManifest(imageID).getSwReleaseIDs();
+        }
+        if (swReleaseIDs != null && !swReleaseIDs.isEmpty()) {
+            statusMessage.setMessage("App ID = " + appID);
+
+            for (String swReleaseID : swReleaseIDs) {
+                slrKey = appID + "-" + swReleaseID;
+                if (rights.containsKey(slrKey)) {
+                    LicenseRight slr = rights.get(slrKey);
+                    if (models.getModel(swReleaseID).getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
+                        quantity = instances;
+                    } else if (models.getModel(swReleaseID).getLicenseMetric().equals(LicenseMetric.RAM)) {
+                        quantity = ram;
+                    } else if (models.getModel(swReleaseID).getLicenseMetric().equals(LicenseMetric.VCPU)) {
+                        quantity = vCPU;
+                    } else {
+                        quantity = -1;   // TODO: Handle this case
+                    }
+                    if (models.getModel(swReleaseID).getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
+                        slr.releaseRights(quantity);
+                        statusMessage.setElement(new StatusMessageElement("Rights released for: ", slr));
+                    }
+                }
+            }
+            statusMessage.setStatus(StatusMessage.SUCCESS);
+            statusMessage.setMessage(statusMessage.getMessage().concat(". Rights have been released"));
+        } else {
+            // (swReleaseIDs.isEmpty())
+            statusMessage.setMessage("No manifest found for ImageID: " + imageID); //TO DO: Test this condition
+        }
+        return statusMessage;
+    }
+
     public HashMap<String, LicenseRight> getSoftwareLicenseRights() {
         return rights;
     }
