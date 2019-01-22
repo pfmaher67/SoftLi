@@ -1,9 +1,20 @@
 spring:
   application:
     name: SoftLi
-
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: 'jdbc:h2:mem:db;DB_CLOSE_DELAY=-1'
+    username: sa
+    password: 
+  jpa:
+    hibernate:
+      ddl-auto: create      
+      naming: 
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      
 am:
-  database: AppDBProxy
+  database: 'Dev: H2'
   
   
 license-model-values:

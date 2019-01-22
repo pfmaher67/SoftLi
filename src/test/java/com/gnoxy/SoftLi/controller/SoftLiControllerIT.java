@@ -28,10 +28,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
@@ -50,6 +52,9 @@ public class SoftLiControllerIT {
 
     @Autowired
     SoftLiController softLiController;
+    
+//    @Autowired
+//    TestEntityManager entityManager;    
 
     @Before
     public void setup() throws Exception {
@@ -68,6 +73,20 @@ public class SoftLiControllerIT {
     }
 
 //    @Test
+//    public void testListRights2() throws Exception {
+//        System.out.println("\n\nIntegration Testing /listRights2\n\n");
+//        MvcResult m = mockMvc.perform(get("/addRight?appID=A-Test&swReleaseID=S-Test&quantity=19")
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andReturn();
+//        m.getRequest().getContentAsString();
+//        System.out.println("My IT Result: " + m.getRequest().getContentAsString());
+//        MvcResult m2 = mockMvc.perform(get("/listRights2").contentType(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON)).andReturn();
+//        System.out.println("My IT Result2: " + m2.getRequest().getContentAsString());
+////                .andExpect(status().isOk())
+////                .andExpect(jsonPath("*.swReleaseID", hasItem(is("TM-5"))));
+//    }
+////    @Test
 //    public void testSearchASync() throws Exception {
 //        MvcResult result = mockMvc.perform(get("").contentType(MediaType.APPLICATION_JSON))
 //                .andDo(print())
