@@ -68,19 +68,19 @@ public class LicenseModelsTest {
 
 
         LicenseModel model = models.getModel("TM-1");
-        assertEquals("TM-1", model.getID());
+        assertEquals("TM-1", model.getId());
         assertEquals(LicenseMetric.VCPU, model.getLicenseMetric());
         assertEquals(SoftwareCategory.APPLICATION,
                 model.getSoftwareCategory());
 
         model = models.getModel("TM-2");
-        assertEquals("TM-2", model.getID());
+        assertEquals("TM-2", model.getId());
         assertEquals(LicenseMetric.INSTANCE, model.getLicenseMetric());
         assertEquals(SoftwareCategory.INFRASTRUCTURE,
                 model.getSoftwareCategory());
 
         model = models.getModel("TM-3");
-        assertEquals("TM-3", model.getID());
+        assertEquals("TM-3", model.getId());
         assertEquals(LicenseMetric.INSTANCE, model.getLicenseMetric());
         assertEquals(SoftwareCategory.APPLICATION,
                 model.getSoftwareCategory());

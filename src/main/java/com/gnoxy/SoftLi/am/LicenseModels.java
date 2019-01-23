@@ -35,7 +35,7 @@ public class LicenseModels {
     }
 
     public void addModel(LicenseModel l) {
-        String id = l.getID();
+        String id = l.getId();
         if (!modelsMap.containsKey(id)) {
             modelsMap.put(id, l);
         }
@@ -51,10 +51,10 @@ public class LicenseModels {
         while (i.hasNext()) {
             LicenseModelsInitializer.LicenseModelTemplate t = i.next();
             LicenseModel model = t.getModel();
-            System.out.println("LicenseModels init() " + model.getID()
+            System.out.println("LicenseModels init() " + model.getId()
                     + " : " + model.getLicenseMetric().getDescription()
                     + " : " + model.getSoftwareCategory().getDescription());
-            String id = model.getID();
+            String id = model.getId();
             if (!modelsMap.containsKey(id)) {
                 modelsMap.put(id, model);
             }

@@ -56,7 +56,7 @@ public class LicenseRights {
 
     public StatusMessage addRight(String appID, String swReleaseID, long quantity) {
         LicenseRight licenseRight = new LicenseRight(appID, swReleaseID, quantity);
-        rights.put(licenseRight.generateKey(), licenseRight);
+        rights.put(licenseRight.getId(), licenseRight);
         StatusMessageElement element = new StatusMessageElement("Software License Right created.", licenseRight);
         return new StatusMessage(StatusMessage.SUCCESS, "OK", element);
     }

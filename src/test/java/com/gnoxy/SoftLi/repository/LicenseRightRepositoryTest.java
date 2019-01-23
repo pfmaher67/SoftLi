@@ -17,7 +17,8 @@ package com.gnoxy.SoftLi.repository;
 
 import com.gnoxy.SoftLi.repository.LicenseRightRepository;
 import com.gnoxy.SoftLi.SoftLiApplication;
-import com.gnoxy.SoftLi.am.DBLicenseRight;
+import com.gnoxy.SoftLi.am.LicenseRight;
+import java.util.List;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,21 +53,24 @@ public class LicenseRightRepositoryTest {
     LicenseRightRepository licenseRightRepository;
     
     @Test
-    public void testWriteAndReadLicenseRightRepo() {
-        System.out.println("\n\nhere 0\n\n");
-        this.entityManager.persist(new DBLicenseRight("App0", "SW-1", 24 ));
+    public void testWriteAndRead() {
+        System.out.println("\n\nLicenseRightRepositoryTest: testWriteandRead()\n\n");
+        LicenseRight licenseRight = new LicenseRight("A-4", "TM-4", 24 );
+        this.entityManager.persist(licenseRight);
         
-        System.out.println("\n\nhere 1\n\n");
-        DBLicenseRight licenseRight = licenseRightRepository
-                .save(new DBLicenseRight("App-1","SW-1", 16));
-        System.out.println("\n\nhere 2\n\n");
-//        DBLicenseRight foundRight = licenseRightRepository.getOne(licenseRight.getId());
-        DBLicenseRight foundRight = licenseRightRepository.getOne(licenseRight.getId());
-        System.out.println("\n\nhere 3\n\n");
-        
+        LicenseRight foundRight = licenseRightRepository.getOne(licenseRight.getId());
         assertNotNull(foundRight);
-        System.out.println("Found Right: " + foundRight.getAppId() + "/" + foundRight.getSwReleaseId()
-            + ": " + foundRight.getQuantityOwned());
+        System.out.println("Found Right: " + foundRight.toString());
+        
+//        List<LicenseRight> rights = licenseRightRepository.findAll();
+//        rights.forEach((r) -> {
+//            System.out.println(r.toString());
+//        });
+
+        LicenseRight foundRight2 = licenseRightRepository.getOne("AB-2-MB-1");
+        assertNotNull(foundRight2);
+        System.out.println("Found Right2: " + foundRight2.toString());
+        
         
     }
     

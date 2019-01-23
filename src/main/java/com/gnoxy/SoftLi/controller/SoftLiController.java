@@ -15,7 +15,6 @@
  */
 package com.gnoxy.SoftLi.controller;
 
-import com.gnoxy.SoftLi.am.DBLicenseRight;
 import com.gnoxy.SoftLi.am.LicenseModels;
 import com.gnoxy.SoftLi.am.LicenseRight;
 import com.gnoxy.SoftLi.am.StatusMessage;
@@ -24,6 +23,7 @@ import com.gnoxy.SoftLi.am.Manifests;
 import com.gnoxy.SoftLi.init.LicenseModelsInitializer;
 import com.gnoxy.SoftLi.init.LicenseRightsInitializer;
 import com.gnoxy.SoftLi.init.ManifestsInitializer;
+import com.gnoxy.SoftLi.repository.LicenseModelRepository;
 import com.gnoxy.SoftLi.repository.LicenseRightRepository;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +50,9 @@ public class SoftLiController {
     
     @Autowired
     private LicenseRightRepository licenseRightRepository;
+    
+    @Autowired
+    private LicenseModelRepository licenseModelRepository;
 
     @Autowired
     private LicenseModelsInitializer lmi;
@@ -98,13 +101,13 @@ public class SoftLiController {
     public StatusMessage add(@RequestParam(value = "appID", defaultValue = "0") String appID,
             @RequestParam(value = "swReleaseID", defaultValue = "0") String swReleaseID,
             @RequestParam(value = "quantity", defaultValue = "0") String quantity) {
-        DBLicenseRight l = new DBLicenseRight(appID, swReleaseID, Long.parseLong(quantity));
+        LicenseRight l = new LicenseRight(appID, swReleaseID, Long.parseLong(quantity));
         licenseRightRepository.save(l);
         return licenseRights.addRight(appID, swReleaseID, Long.parseLong(quantity));
     }
 
     @RequestMapping("/listRights2")
-    public List<DBLicenseRight> list2() {
+    public List<LicenseRight> list2() {
         return licenseRightRepository.findAll();
     }
 

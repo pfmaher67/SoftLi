@@ -1,8 +1,16 @@
 insert into LicenseRight(id, appId, swReleaseId, qtyOwned, qtyReserved) values
- ('A-1-OM-1', 'A-1', 'OM-1', 32, 0)
- ,('A-2-OM-1', 'A-2', 'OM-1', 16, 0)
- ,('A-2-OM-5', 'A-2', 'OM-5', 64, 0)
- ,('A-3-OM-3', 'A-3', 'OM-3', 3, 0)
- ,('A-4-OM-3', 'A-4', 'OM-3', 6, 0);
+ ('AB-1-MB-1', 'AB-1', 'MB-1', 32, 0)
+ ,('AB-2-MB-1', 'AB-2', 'MB-1', 16, 0)
+ ,('AB-2-MB-5', 'AB-2', 'MB-5', 64, 0)
+ ,('AB-3-MB-3', 'AB-3', 'MB-3', 3, 0);
+ 
+
+insert into LicenseModel(id, name, licenseMetricId, softwareCategoryId) values
+('MB-1', 'WAS ND', 0, 0)
+,('MB-2', 'RHEL', 2, 1)
+,('MB-3', 'MongoDB', 2, 0)
+,('MB-4', 'Qualys', 2, 1)
+,('MB-5', 'Kafka', 0, 0)
+
 
 

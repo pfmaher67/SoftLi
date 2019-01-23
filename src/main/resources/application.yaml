@@ -14,7 +14,7 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       
 am:
-  database: 'Dev: H2'
+  database: 'Dev - H2'
   
   
 license-model-values:

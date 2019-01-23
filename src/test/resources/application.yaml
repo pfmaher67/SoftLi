@@ -14,7 +14,7 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
 am:
-  database: 'Build: H2'
+  database: 'Build - H2'
   
 
   

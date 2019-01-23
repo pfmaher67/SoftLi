@@ -16,41 +16,85 @@
 
 package com.gnoxy.SoftLi.am;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "LicenseRight")
 public class LicenseRight {
 
-    private final String appID;
-    private final String swReleaseID;
-    private final long qtyOwned;
+    @Id
+    @Column(name = "id")
+    private String id;
+    @Column(name = "appId")
+    private String appId;
+    @Column(name = "swReleaseId")
+    private String swReleaseId;
+    @Column(name = "qtyOwned")
+    private long qtyOwned;
+    @Column(name = "qtyReserved")
     private long qtyReserved;
     
+    public LicenseRight() {
+        
+    }
+    
     public LicenseRight(String appID, String swReleaseID, long quantity) {
-        this.appID = appID;
-        this.swReleaseID = swReleaseID;
+        this.id = appID + "-" + swReleaseID;
+        this.appId = appID;
+        this.swReleaseId = swReleaseID;
         this.qtyOwned = quantity;
         qtyReserved = 0;
     }
     
-    public String generateKey() {
-        return appID + "-" + swReleaseID;
+    public String getId() {
+        return id;
     }
     
-    public String getAppID() {
-        return appID;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getAppId() {
+        return appId;
     }
     
-    public String getSwReleaseID() {
-        return swReleaseID;
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public String getSwReleaseId() {
+        return swReleaseId;
     }
     
+    public void setSwReleaseId(String swReleaseId) {
+        this.swReleaseId = swReleaseId;
+    }
+
     public long getQuantityOwned() {
         return qtyOwned;
     }
     
+    public void setQuantityOwned(long qtyOwned) {
+        this.qtyOwned = qtyOwned;
+    }
+
     public long getQuantityReserved() {
         return qtyReserved;
     }
     
+    public void setQuantityReserved(long qtyReserved) {
+        this.qtyReserved = qtyReserved;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("LicenseRight[appId=%s, swReleaseId=%s, qtyOwned=%d, qtyReserved=%d]",
+                appId, swReleaseId, qtyOwned, qtyReserved);
+    }
+
     public boolean reserveRights(long quantity) {
         boolean status = false;
         if (qtyReserved + quantity <= qtyOwned) {
@@ -77,8 +121,8 @@ public class LicenseRight {
     
     public LicenseRight copy() {
         LicenseRight l = new LicenseRight(
-                this.appID,
-                this.swReleaseID,
+                this.appId,
+                this.swReleaseId,
                 this.qtyOwned
         );
         l.reserveRights(qtyReserved);
