@@ -15,22 +15,13 @@
  */
 package com.gnoxy.SoftLi.repository;
 
-import com.gnoxy.SoftLi.repository.LicenseRightRepository;
-import com.gnoxy.SoftLi.SoftLiApplication;
 import com.gnoxy.SoftLi.am.LicenseRight;
-import java.util.List;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -38,11 +29,6 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author Patrick Maher<dev@gnoxy.com>
  */
 
-//@AutoConfigurationPackage
-//@SpringBootConfiguration
-//@EntityScan("com.gnoxy.SoftLi.am")
-//@ContextConfiguration(classes= LicenseRightRepository.class)
-//@SpringBootTest(classes = SoftLiApplication.class)
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class LicenseRightRepositoryTest {

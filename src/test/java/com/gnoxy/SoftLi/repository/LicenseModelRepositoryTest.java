@@ -18,6 +18,7 @@ package com.gnoxy.SoftLi.repository;
 import com.gnoxy.SoftLi.am.LicenseMetric;
 import com.gnoxy.SoftLi.am.LicenseModel;
 import com.gnoxy.SoftLi.am.SoftwareCategory;
+import java.util.List;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,10 +51,10 @@ public class LicenseModelRepositoryTest {
         assertNotNull(foundModel);
         System.out.println("Found Model: " + foundModel.toString());
         
-//        List<LicenseRight> rights = licenseModelRepository.findAll();
-//        rights.forEach((r) -> {
-//            System.out.println(r.toString());
-//        });
+        List<LicenseModel> models = licenseModelRepository.findAll();
+        models.forEach((m) -> {
+            System.out.println(m.toString());
+        });
 
         LicenseModel foundModel2 = licenseModelRepository.getOne("MB-1");
         assertNotNull(foundModel2);
