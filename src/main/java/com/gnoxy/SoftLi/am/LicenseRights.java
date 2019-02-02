@@ -70,7 +70,7 @@ public class LicenseRights {
         Manifest m = manifests.getManifest(imageID);
         Set<String> swReleaseIDs = null;
         if (m != null) {
-            swReleaseIDs = manifests.getManifest(imageID).getSwReleaseIDs();
+            swReleaseIDs = manifests.getManifest(imageID).getSwReleaseIds();
         }
         if (swReleaseIDs != null && !swReleaseIDs.isEmpty()) {
             boolean rightsAvailable = true;
@@ -151,7 +151,7 @@ public class LicenseRights {
         Manifest m = manifests.getManifest(imageID);
         Set<String> swReleaseIDs = null;
         if (m != null) {
-            swReleaseIDs = manifests.getManifest(imageID).getSwReleaseIDs();
+            swReleaseIDs = manifests.getManifest(imageID).getSwReleaseIds();
         }
         if (swReleaseIDs != null && !swReleaseIDs.isEmpty()) {
             statusMessage.setMessage("App ID = " + appID);

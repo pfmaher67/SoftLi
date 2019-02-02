@@ -13,34 +13,79 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package com.gnoxy.SoftLi.am;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
 
 /**
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
+@Entity
+@Table(name = "Images")
 public class Manifest {
 
-    private final String imageID;
-    private final Set<String> swReleaseIDs;
+    @Id
+    @Column(name = "imageId")
+    private String imageId;
+    @Column(name = "platform")
+    private String platform;
+    @ElementCollection
+    @Column(name = "swReleaseId")
+    @CollectionTable(name="manifests", joinColumns= {@JoinColumn(name="image_id")})
+    private Set<String> swReleaseIds;
 
-    public Manifest(String imageID, String swReleaseID) {
-        this.imageID = imageID;
-        swReleaseIDs = new HashSet<>();
-        swReleaseIDs.add(swReleaseID);
-    }
+    protected Manifest() {
 
-    public void addSwReleaseID(String swReleaseID) {
-        swReleaseIDs.add(swReleaseID);
     }
     
-    public Set<String> getSwReleaseIDs() {
-        return swReleaseIDs;
+    public String getImageId() {
+        return imageId;
+    }
+
+    public Manifest(String imageId, String swReleaseID) {
+        this.imageId = imageId;
+        this.platform = "undefined";
+        if (swReleaseIds == null) {
+            swReleaseIds = new HashSet<>();
+        }
+        swReleaseIds.add(swReleaseID);
+    }
+
+    public Manifest(String imageId, String platform, String swReleaseID) {
+        this.imageId = imageId;
+        this.platform = platform;
+        if (swReleaseIds == null) {
+            swReleaseIds = new HashSet<>();
+        }
+        swReleaseIds.add(swReleaseID);
+    }
+
+    public void addSwReleaseId(String swReleaseID) {
+        swReleaseIds.add(swReleaseID);
+    }
+
+    public Set<String> getSwReleaseIds() {
+        return swReleaseIds;
+    }
+    
+    public void setSwReleaseIds(Set<String> swReleaseIds) {
+        this.swReleaseIds = swReleaseIds;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Manifest[imageId=%s, platform=%s, swReleaseIds=%s]",
+                imageId, platform, swReleaseIds.toString());
     }
 
 }

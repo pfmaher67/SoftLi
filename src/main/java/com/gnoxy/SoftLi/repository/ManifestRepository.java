@@ -15,7 +15,7 @@
  */
 package com.gnoxy.SoftLi.repository;
 
-import com.gnoxy.SoftLi.am.LicenseModel;
+import com.gnoxy.SoftLi.am.Manifest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,8 +23,8 @@ import org.springframework.stereotype.Repository;
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
-@Repository("LicenseModelRepository")
-public interface LicenseModelRepository extends JpaRepository<LicenseModel, String> {
+@Repository("ManifestRepository")
+public interface ManifestRepository extends JpaRepository<Manifest, String> {
     
 
     

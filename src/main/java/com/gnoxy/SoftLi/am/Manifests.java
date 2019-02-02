@@ -49,7 +49,7 @@ public class Manifests {
     
     public void addSwReleaseID(String imageID, String swReleaseID) {
         if (manifests.containsKey(imageID)) {
-            manifests.get(imageID).addSwReleaseID(swReleaseID);
+            manifests.get(imageID).addSwReleaseId(swReleaseID);
         } else {
             manifests.put(imageID, new Manifest(imageID, swReleaseID));
         }
@@ -60,7 +60,7 @@ public class Manifests {
     }
     
     public Set<String> getSwReleaseIds(String imageID) {
-        return manifests.get(imageID).getSwReleaseIDs();
+        return manifests.get(imageID).getSwReleaseIds();
     }
     
 }
