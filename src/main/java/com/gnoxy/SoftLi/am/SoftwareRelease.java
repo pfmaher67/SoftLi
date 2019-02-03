@@ -17,6 +17,7 @@ package com.gnoxy.SoftLi.am;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -42,7 +43,7 @@ public class SoftwareRelease {
 //    @Transient
 //    private String licenseModelId;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="licenseModelId")
     private LicenseModel licenseModel;
 

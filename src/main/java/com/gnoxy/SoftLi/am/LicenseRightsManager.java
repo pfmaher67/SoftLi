@@ -15,13 +15,13 @@
  */
 package com.gnoxy.SoftLi.am;
 
-import com.gnoxy.SoftLi.init.LicenseRightsInitializer;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.gnoxy.SoftLi.repository.ImageRepository;
+import com.gnoxy.SoftLi.repository.LicenseRightRepository;
+import java.util.Collection;
+import javax.persistence.EntityManager;
 
 /**
  *
@@ -30,21 +30,13 @@ import com.gnoxy.SoftLi.repository.ImageRepository;
 public class LicenseRightsManager {
 
     @Autowired
-    ImageRepository manifestRepository;
+    EntityManager entityManager;
 
-    // All software license rights, indexed by the key: App ID - SW Release ID
-    private final HashMap<String, LicenseRight> rights;
-    // The manifest contains the list of SW Release IDs associated with an Image ID
-    private final Manifests manifests;
-    private final LicenseModels models;
+    @Autowired
+    ImageRepository imageRepository;
 
-    public LicenseRightsManager(LicenseModels models, Manifests manifests) {
-        rights = new HashMap<>();
-//        manifests = Initializer.getManifests();  // temporary measure
-//        models = Initializer.getLicenseModels();
-        this.models = models;
-        this.manifests = manifests;
-    }
+    @Autowired
+    LicenseRightRepository licenseRightRepository;
 
     public StatusMessage reserveRights(String appID, String imageID,
             long vCPU, long ram, long instances) {
@@ -52,24 +44,28 @@ public class LicenseRightsManager {
         String slrKey;
         long quantity;
         // From the image id, check the manifest and get all the Software Release IDs associated with the image
-        Image m = manifestRepository.getOne(imageID);
-        Set<String> swReleaseIDs = null;
-        if (m != null) {
-            swReleaseIDs = m.getSwReleaseIds();
+        Image image = imageRepository.getOne(imageID);
+        List<SoftwareRelease> swReleases = null;
+        if (image != null) {
+            swReleases = image.getSoftwareReleases();
         }
-        if (swReleaseIDs != null && !swReleaseIDs.isEmpty()) {
+
+        HashMap<String, LicenseRight> rights
+                = getLicenseRightsHash(licenseRightRepository.findLicenseRightsByAppId(appID));
+
+        if (swReleases != null && !swReleases.isEmpty()) {
             boolean rightsAvailable = true;
             statusMessage.setMessage("App ID = " + appID);
-            // First check each swReleaseID to see if the App has enough rights to set
-            for (String swReleaseID : swReleaseIDs) {
-                slrKey = appID + "-" + swReleaseID;
+            // First check each swRelease to see if the App has enough rights to set
+            for (SoftwareRelease swRelease : swReleases) {
+                slrKey = appID + "-" + swRelease.getId();
                 if (rights.containsKey(slrKey)) {
                     LicenseRight slr = rights.get(slrKey);
-                    if (models.getModel(swReleaseID).getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
+                    if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
                         quantity = instances;
-                    } else if (models.getModel(swReleaseID).getLicenseMetric().equals(LicenseMetric.RAM)) {
+                    } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.RAM)) {
                         quantity = ram;
-                    } else if (models.getModel(swReleaseID).getLicenseMetric().equals(LicenseMetric.VCPU)) {
+                    } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.VCPU)) {
                         quantity = vCPU;
                     } else {
                         quantity = -1;   // TODO: Handle this case
@@ -83,35 +79,36 @@ public class LicenseRightsManager {
                     }
                 } else {
                     // !licenseRights.containsKey(slrKey)
-                    if (models.getModel(swReleaseID).getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
+                    if (swRelease.getLicenseModel().getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
                         rightsAvailable = false;
                         statusMessage.setElement(new StatusMessageElement("Application doesn't have license right for software, Release ID: "
-                                + swReleaseID, null));
+                                + swRelease.getId(), null));
                     } else {
                         statusMessage.setElement(new StatusMessageElement("Non-application software, Release ID: "
-                                + swReleaseID, null));
+                                + swRelease.getId(), null));
                     }
                 }
             }
             // All rights have been checked at this point.
             if (rightsAvailable) {
-                for (String swReleaseID : swReleaseIDs) {
-                    slrKey = appID + "-" + swReleaseID;
+                for (SoftwareRelease swRelease : swReleases) {
+                    slrKey = appID + "-" + swRelease.getId();
                     if (rights.containsKey(slrKey)) {
                         LicenseRight slr = rights.get(slrKey);
-                        if (models.getModel(swReleaseID).getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
+                        if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
                             quantity = instances;
-                        } else if (models.getModel(swReleaseID).getLicenseMetric().equals(LicenseMetric.RAM)) {
+                        } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.RAM)) {
                             quantity = ram;
-                        } else if (models.getModel(swReleaseID).getLicenseMetric().equals(LicenseMetric.VCPU)) {
+                        } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.VCPU)) {
                             quantity = vCPU;
                         } else {
                             quantity = -1;   // TODO: Handle this case
                         }
-                        if (models.getModel(swReleaseID).getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
+                        if (swRelease.getLicenseModel().getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
                             slr.reserveRights(quantity);
+                            entityManager.persist(slr);
+                            statusMessage.setElement(new StatusMessageElement("Rights reserverd for: ", slr));
                         }
-                        statusMessage.setElement(new StatusMessageElement("Rights reserverd for: ", slr));
                     }
                 }
                 statusMessage.setStatus(StatusMessage.SUCCESS);
@@ -133,29 +130,34 @@ public class LicenseRightsManager {
         String slrKey;
         long quantity;
         // From the image id, check the manifest and get all the Software Release IDs associated with the image
-        Image m = manifests.getManifest(imageID);
-        Set<String> swReleaseIDs = null;
-        if (m != null) {
-            swReleaseIDs = manifests.getManifest(imageID).getSwReleaseIds();
+        Image image = imageRepository.getOne(imageID);
+        List<SoftwareRelease> swReleases = null;
+        if (image != null) {
+            swReleases = image.getSoftwareReleases();
         }
-        if (swReleaseIDs != null && !swReleaseIDs.isEmpty()) {
+
+        HashMap<String, LicenseRight> rights
+                = getLicenseRightsHash(licenseRightRepository.findLicenseRightsByAppId(appID));
+
+        if (swReleases != null && !swReleases.isEmpty()) {
             statusMessage.setMessage("App ID = " + appID);
 
-            for (String swReleaseID : swReleaseIDs) {
-                slrKey = appID + "-" + swReleaseID;
+            for (SoftwareRelease swRelease : swReleases) {
+                slrKey = appID + "-" + swRelease.getId();
                 if (rights.containsKey(slrKey)) {
                     LicenseRight slr = rights.get(slrKey);
-                    if (models.getModel(swReleaseID).getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
+                    if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
                         quantity = instances;
-                    } else if (models.getModel(swReleaseID).getLicenseMetric().equals(LicenseMetric.RAM)) {
+                    } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.RAM)) {
                         quantity = ram;
-                    } else if (models.getModel(swReleaseID).getLicenseMetric().equals(LicenseMetric.VCPU)) {
+                    } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.VCPU)) {
                         quantity = vCPU;
                     } else {
                         quantity = -1;   // TODO: Handle this case
                     }
-                    if (models.getModel(swReleaseID).getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
+                    if (swRelease.getLicenseModel().getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
                         slr.releaseRights(quantity);
+                        entityManager.persist(slr);
                         statusMessage.setElement(new StatusMessageElement("Rights released for: ", slr));
                     }
                 }
@@ -169,8 +171,12 @@ public class LicenseRightsManager {
         return statusMessage;
     }
 
-    public HashMap<String, LicenseRight> getSoftwareLicenseRights() {
-        return rights;
+    public HashMap<String, LicenseRight> getLicenseRightsHash(Collection<LicenseRight> licenseRights) {
+        HashMap<String, LicenseRight> lHash = new HashMap<>();
+        licenseRights.forEach((l) -> {
+            lHash.put(l.getId(), l);
+        });
+        return lHash;
     }
 
 }

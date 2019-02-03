@@ -19,6 +19,7 @@ import com.gnoxy.SoftLi.am.LicenseModels;
 import com.gnoxy.SoftLi.am.LicenseRight;
 import com.gnoxy.SoftLi.am.StatusMessage;
 import com.gnoxy.SoftLi.am.LicenseRights;
+import com.gnoxy.SoftLi.am.LicenseRightsManager;
 import com.gnoxy.SoftLi.am.Manifests;
 import com.gnoxy.SoftLi.init.LicenseModelsInitializer;
 import com.gnoxy.SoftLi.init.LicenseRightsInitializer;
@@ -70,7 +71,10 @@ public class SoftLiController {
             @RequestParam(value = "vCPUs") String vCPUs,
             @RequestParam(value = "ram") String ram,
             @RequestParam(value = "instances") String instances) {
-        return licenseRights.reserveRights(appID, imageID,
+//        return licenseRights.reserveRights(appID, imageID,
+//                Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
+        LicenseRightsManager lrm = new LicenseRightsManager();
+        return lrm.reserveRights(appID, imageID,
                 Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
     }
 
@@ -81,7 +85,8 @@ public class SoftLiController {
             @RequestParam(value = "vCPUs") String vCPUs,
             @RequestParam(value = "ram") String ram,
             @RequestParam(value = "instances") String instances) {
-        return licenseRights.releaseRights(appID, imageID,
+        LicenseRightsManager lrm = new LicenseRightsManager();
+        return lrm.releaseRights(appID, imageID,
                 Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
     }
 

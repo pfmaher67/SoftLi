@@ -17,7 +17,6 @@ package com.gnoxy.SoftLi.repository;
 
 import com.gnoxy.SoftLi.am.LicenseRight;
 import java.util.Collection;
-import java.util.List;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,9 +62,7 @@ public class LicenseRightRepositoryTest {
         assertNotNull(rights);
         rights.forEach((r) -> {
             System.out.println(r.toString());
-        });
-        
-        
+        });        
     }
     
 }

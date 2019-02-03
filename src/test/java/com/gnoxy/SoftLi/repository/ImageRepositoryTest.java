@@ -41,13 +41,13 @@ public class ImageRepositoryTest {
     @Test
     public void testWriteAndRead() {
         System.out.println("\n\nImageRepositoryTest: testWriteandRead()\n\n");
-        Image image = new Image("TI-1", "TM-1");
-        image.addSwReleaseId("TM-2");
-        this.entityManager.persist(image);
-
-        Image foundImage = imageRepository.getOne(image.getImageId());
-        assertNotNull(foundImage);
-        System.out.println("Found Image: " + foundImage.toString());
+//        Image image = new Image("TI-1", "TM-1");
+//        image.addSwReleaseId("TM-2");
+//        this.entityManager.persist(image);
+//
+//        Image foundImage = imageRepository.getOne(image.getImageId());
+//        assertNotNull(foundImage);
+//        System.out.println("Found Image: " + foundImage.toString());
         
 
         Image image2 = imageRepository.getOne("IB-1");

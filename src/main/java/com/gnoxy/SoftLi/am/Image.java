@@ -16,6 +16,7 @@
 package com.gnoxy.SoftLi.am;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -24,7 +25,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -39,10 +43,16 @@ public class Image {
     private String imageId;
     @Column(name = "platform")
     private String platform;
-    @ElementCollection
-    @Column(name = "swReleaseId")
-    @CollectionTable(name="manifest", joinColumns= {@JoinColumn(name="imageId")})
+//    @ElementCollection
+//    @Column(name = "swReleaseId")
+//    @CollectionTable(name="manifest", joinColumns= {@JoinColumn(name="imageId")})
+    @Transient
     private Set<String> swReleaseIds;
+    
+    @ManyToMany
+    @JoinTable(name="manifest", joinColumns = @JoinColumn(name = "imageId", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "swReleaseId", referencedColumnName = "id"))
+    private List<SoftwareRelease> softwareReleases;
 
     protected Image() {
 
@@ -81,11 +91,19 @@ public class Image {
     public void setSwReleaseIds(Set<String> swReleaseIds) {
         this.swReleaseIds = swReleaseIds;
     }
+    
+    public List<SoftwareRelease> getSoftwareReleases() {
+        return softwareReleases;
+    }
+    
+    public void setSoftwareReleases(List<SoftwareRelease> softwareReleases) {
+        this.softwareReleases = softwareReleases;
+    }
 
     @Override
     public String toString() {
-        return String.format("Image[imageId=%s, platform=%s, swReleaseIds=%s]",
-                imageId, platform, swReleaseIds.toString());
+        return String.format("Image[imageId=%s, platform=%s, swReleases=%s]",
+                imageId, platform, softwareReleases.toString());
     }
 
 }

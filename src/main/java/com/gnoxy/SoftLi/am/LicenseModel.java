@@ -18,6 +18,7 @@ package com.gnoxy.SoftLi.am;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -41,8 +42,9 @@ public class LicenseModel {
     private int licenseMetricId = -1;
     @Column(name = "softwareCategoryId")
     private int softwareCategoryId = -1;
-    @OneToMany(mappedBy = "licenseModel")
-    private List<SoftwareRelease> swReleases;
+//  Do I need to set this mapping, if I don't intend to use this relationship?    
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "licenseModel")
+//    private List<SoftwareRelease> swReleases;
 
     @Transient
     private LicenseMetric metric;
