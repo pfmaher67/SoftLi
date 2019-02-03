@@ -16,7 +16,10 @@
 package com.gnoxy.SoftLi.repository;
 
 import com.gnoxy.SoftLi.am.Image;
+import com.gnoxy.SoftLi.am.LicenseModel;
+import com.gnoxy.SoftLi.am.SoftwareRelease;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,33 +31,36 @@ import org.springframework.test.context.junit4.SpringRunner;
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
-
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class ImageRepositoryTest {
+public class SoftwareReleaseRepositoryTest {
+
     @Autowired
     TestEntityManager entityManager;
-    
+
     @Autowired
-    ImageRepository imageRepository;
-    
+    SoftwareReleaseRepository swReleaseRepository;
+
     @Test
     public void testWriteAndRead() {
-        System.out.println("\n\nImageRepositoryTest: testWriteandRead()\n\n");
-        Image image = new Image("TI-1", "TM-1");
-        image.addSwReleaseId("TM-2");
-        this.entityManager.persist(image);
+        System.out.println("\n\nSoftwareReleaseRepository: testWriteandRead()\n\n");
+        SoftwareRelease swRelease = new SoftwareRelease("SWR-1", "Release 1", "Version 1", "License ID 1");
+        this.entityManager.persist(swRelease);
 
-        Image foundImage = imageRepository.getOne(image.getImageId());
-        assertNotNull(foundImage);
-        System.out.println("Found Image: " + foundImage.toString());
-        
+        SoftwareRelease foundSoftwareRelease = swReleaseRepository.getOne(swRelease.getId());
+        assertNotNull(foundSoftwareRelease);
+        System.out.println("Found swRelease: " + foundSoftwareRelease.toString());
 
-        Image image2 = imageRepository.getOne("IB-1");
-        assertNotNull(image2);
-        System.out.println("Found Image2: " + image2.toString());
-        
-        
+        SoftwareRelease swR2 = swReleaseRepository.getOne("RB-4");
+        assertEquals("RHEL 7", swR2.getName());
+        System.out.println("Found swRelease2: " + swR2.toString());
+        LicenseModel m = swR2.getLicenseModel();
+        if (m == null) {
+            System.out.println("No License Model Found.");
+        } else {
+            System.out.println("Found related LicenseModel: " + m.toString());
+        }
+
     }
-    
+
 }

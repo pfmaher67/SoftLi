@@ -30,8 +30,8 @@ public class LicenseRight {
     private String id;
     @Column(name = "appId")
     private String appId;
-    @Column(name = "swReleaseId")
-    private String swReleaseId;
+    @Column(name = "licenseModelId")
+    private String licenseModelId;
     @Column(name = "qtyOwned")
     private long qtyOwned;
     @Column(name = "qtyReserved")
@@ -41,10 +41,10 @@ public class LicenseRight {
         
     }
     
-    public LicenseRight(String appID, String swReleaseID, long quantity) {
-        this.id = appID + "-" + swReleaseID;
+    public LicenseRight(String appID, String licenseModelId, long quantity) {
+        this.id = appID + "-" + licenseModelId;
         this.appId = appID;
-        this.swReleaseId = swReleaseID;
+        this.licenseModelId = licenseModelId;
         this.qtyOwned = quantity;
         qtyReserved = 0;
     }
@@ -65,12 +65,12 @@ public class LicenseRight {
         this.appId = appId;
     }
 
-    public String getSwReleaseId() {
-        return swReleaseId;
+    public String getLicenseModelId() {
+        return licenseModelId;
     }
     
-    public void setSwReleaseId(String swReleaseId) {
-        this.swReleaseId = swReleaseId;
+    public void setLicenseModelId(String licenseModelId) {
+        this.licenseModelId = licenseModelId;
     }
 
     public long getQuantityOwned() {
@@ -91,8 +91,8 @@ public class LicenseRight {
     
     @Override
     public String toString() {
-        return String.format("LicenseRight[appId=%s, swReleaseId=%s, qtyOwned=%d, qtyReserved=%d]",
-                appId, swReleaseId, qtyOwned, qtyReserved);
+        return String.format("LicenseRight[appId=%s, licenseModelId=%s, qtyOwned=%d, qtyReserved=%d]",
+                appId, licenseModelId, qtyOwned, qtyReserved);
     }
 
     public boolean reserveRights(long quantity) {
@@ -122,7 +122,7 @@ public class LicenseRight {
     public LicenseRight copy() {
         LicenseRight l = new LicenseRight(
                 this.appId,
-                this.swReleaseId,
+                this.licenseModelId,
                 this.qtyOwned
         );
         l.reserveRights(qtyReserved);

@@ -35,13 +35,13 @@ import javax.persistence.Table;
 public class Image {
 
     @Id
-    @Column(name = "imageId")
+    @Column(name = "id")
     private String imageId;
     @Column(name = "platform")
     private String platform;
     @ElementCollection
     @Column(name = "swReleaseId")
-    @CollectionTable(name="manifest", joinColumns= {@JoinColumn(name="image_id")})
+    @CollectionTable(name="manifest", joinColumns= {@JoinColumn(name="imageId")})
     private Set<String> swReleaseIds;
 
     protected Image() {

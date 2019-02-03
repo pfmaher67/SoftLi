@@ -46,26 +46,6 @@ public class LicenseRightsManager {
         this.manifests = manifests;
     }
 
-    public void init(LicenseRightsInitializer lri) {
-        List<LicenseRightsInitializer.LicenseRightTemplate> l = lri.getLicenseRightTemplates();
-        Iterator<LicenseRightsInitializer.LicenseRightTemplate> i = l.iterator();
-        while (i.hasNext()) {
-            LicenseRightsInitializer.LicenseRightTemplate t = i.next();
-            System.out.println("LicenseRights init(): Adding right: "
-                    + addRight(t.getAppId(), t.getModelId(), Long.valueOf(t.getQuantity())).getMessage()
-                    + " : " + t.getAppId()
-                    + " : " + t.getModelId()
-                    + " : " + t.getQuantity());
-        }
-    }
-
-    public StatusMessage addRight(String appID, String swReleaseID, long quantity) {
-        LicenseRight licenseRight = new LicenseRight(appID, swReleaseID, quantity);
-        rights.put(licenseRight.getId(), licenseRight);
-        StatusMessageElement element = new StatusMessageElement("Software License Right created.", licenseRight);
-        return new StatusMessage(StatusMessage.SUCCESS, "OK", element);
-    }
-
     public StatusMessage reserveRights(String appID, String imageID,
             long vCPU, long ram, long instances) {
         StatusMessage statusMessage = new StatusMessage();

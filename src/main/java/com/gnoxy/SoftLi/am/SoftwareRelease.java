@@ -18,6 +18,8 @@ package com.gnoxy.SoftLi.am;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -36,10 +38,15 @@ public class SoftwareRelease {
     private String name;
     @Column(name = "version")
     private String version;
-    @Column(name = "licenseModelId")
-    private String licenseModelId;
+////    @Column(name = "licenseModelId")
+//    @Transient
+//    private String licenseModelId;
+    
+    @ManyToOne
+    @JoinColumn(name="licenseModelId")
+    private LicenseModel licenseModel;
 
-    public SoftwareRelease() {
+    protected SoftwareRelease() {
 
     }
 
@@ -47,18 +54,38 @@ public class SoftwareRelease {
         this.id = id;
         this.name = name;
         this.version = version;
-        this.licenseModelId = licenseModelId;
+//        this.licenseModelId = licenseModelId;
     }
 
     public String getId() {
         return id;
     }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public String getVersion() {
+        return version;
+    }
+    
+//    public String getLicenseModelId() {
+//        return licenseModelId;
+//    }
+    
+    public LicenseModel getLicenseModel() {
+        return licenseModel;
+    }
+    
+    public void setLicenseModel(LicenseModel licenseModel) {
+        this.licenseModel = licenseModel;
+    }
 
     @Override
     public String toString() {
         // use the methods to ensure the metric and category have been initialized.
-        return String.format("LicenseModel[id=%s, name=%s, version=%s, licenseModelId=%s]",
-                id, name, version, licenseModelId);
+        return String.format("SoftwareRelease[id=%s, name=%s, version=%s]",
+                id, name, version);
     }    
 
 }

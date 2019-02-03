@@ -15,9 +15,11 @@
  */
 package com.gnoxy.SoftLi.am;
 
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -39,12 +41,15 @@ public class LicenseModel {
     private int licenseMetricId = -1;
     @Column(name = "softwareCategoryId")
     private int softwareCategoryId = -1;
+    @OneToMany(mappedBy = "licenseModel")
+    private List<SoftwareRelease> swReleases;
+
     @Transient
     private LicenseMetric metric;
     @Transient
     private SoftwareCategory category;
 
-    public LicenseModel() {
+    protected LicenseModel() {
 
     }
 
@@ -72,23 +77,45 @@ public class LicenseModel {
 
     public LicenseMetric getLicenseMetric() {
         if (metric == null) {
-            metric = (LicenseMetric) LicenseMetric.getByValue(LicenseMetric.class, licenseMetricId);
+//            This stopped working when I added the relationship with the SoftwareRelease Entity; changed to switch 
+//            metric = (LicenseMetric) LicenseMetric.getByValue(LicenseMetric.class, licenseMetricId);
+            switch (licenseMetricId) {
+                case 0:
+                    metric = LicenseMetric.VCPU;
+                    break;
+                case 1:
+                    metric = LicenseMetric.RAM;
+                    break;
+                case 2:
+                    metric = LicenseMetric.INSTANCE;
+                    break;
+            }
         }
         return metric;
     }
 
     public SoftwareCategory getSoftwareCategory() {
         if (category == null) {
-            category = (SoftwareCategory) SoftwareCategory.getByValue(SoftwareCategory.class, softwareCategoryId);
+//            This stopped working when I added the relationship with the SoftwareRelease Entity; changed to switch 
+//            category = (SoftwareCategory) SoftwareCategory.getByValue(SoftwareCategory.class, softwareCategoryId);
+            switch (softwareCategoryId) {
+                case 0:
+                    category = SoftwareCategory.APPLICATION;
+                    break;
+                case 1:
+                    category = SoftwareCategory.INFRASTRUCTURE;
+                    break;
+            }
         }
         return category;
     }
-    
+
     @Override
     public String toString() {
         // use the methods to ensure the metric and category have been initialized.
-        return String.format("LicenseModel[id=%s, name=%s, licenseMetric=%s, softwareCategory=%s]",
-                id, name, getLicenseMetric().getDescription(), getSoftwareCategory().getDescription());
-    }    
+        return String.format("LicenseModel[id=%s, name=%s, softwareCategory=%s, licenseMetric=%s]",
+                //                id, name, licenseMetricId, softwareCategoryId);
+                id, name, getSoftwareCategory().getDescription(), getLicenseMetric().getDescription());
+    }
 
 }
