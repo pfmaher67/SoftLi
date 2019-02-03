@@ -21,13 +21,13 @@ insert into LicenseModel(id, name, licenseMetricId, softwareCategoryId) values
 --,('RB-6', 'Qualys', 'X', 'MB-4')
 --,('RB-7', 'Kafka', 'Y', 'MB-5');
 
-insert into Images(imageId, platform) values
+insert into Image(imageId, platform) values
 ('IB-1', 'AWS')
 ,('IB-2', 'AWS')
 ,('IB-3', 'AWS');
 
 
-insert into manifests(image_id, swReleaseId) values
+insert into manifest(image_id, swReleaseId) values
 ('IB-1', 'RB-1')
 ,('IB-1', 'RB-3')
 ,('IB-1', 'RB-6')

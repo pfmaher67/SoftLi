@@ -33,8 +33,8 @@ public interface LicenseRightRepository extends JpaRepository<LicenseRight, Stri
 //    @Query("select l from LicenseRight l")
 //    Collection<DBLicenseRight> findAllLicenseRights();
 //    
-//    @Query("select l from LicenseRight l where l.appID = ?1")
-//    Collection<DBLicenseRight> findLicenseRightsByAppId(String appId);
+    @Query("select l from LicenseRight l where l.appId = ?1")
+    Collection<LicenseRight> findLicenseRightsByAppId(String appId);
     
 //    @Query("select l from LicenseRight l where l.id = ?1")
 //    DBLicenseRight findLicenseRightById(String id);

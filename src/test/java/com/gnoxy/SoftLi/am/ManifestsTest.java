@@ -59,7 +59,7 @@ public class ManifestsTest {
     @Test
     public void testGetSwReleaseIds() {
         System.out.println("\n\nTesting: getSwReleaseIds");
-        Manifest manifest = manifests.getManifest("I-1");
+        Image manifest = manifests.getManifest("I-1");
         Set<String> binaryIDs = manifest.getSwReleaseIds();
         assertEquals(true, binaryIDs.contains("TM-1"));
         assertEquals(true, binaryIDs.contains("TM-2"));

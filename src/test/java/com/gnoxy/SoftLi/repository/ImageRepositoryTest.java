@@ -15,11 +15,7 @@
  */
 package com.gnoxy.SoftLi.repository;
 
-import com.gnoxy.SoftLi.am.LicenseMetric;
-import com.gnoxy.SoftLi.am.LicenseModel;
-import com.gnoxy.SoftLi.am.Manifest;
-import com.gnoxy.SoftLi.am.SoftwareCategory;
-import java.util.List;
+import com.gnoxy.SoftLi.am.Image;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,28 +31,28 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class ManifestRepositoryTest {
+public class ImageRepositoryTest {
     @Autowired
     TestEntityManager entityManager;
     
     @Autowired
-    ManifestRepository manifestRepository;
+    ImageRepository imageRepository;
     
     @Test
     public void testWriteAndRead() {
-        System.out.println("\n\nManifestRepositoryTest: testWriteandRead()\n\n");
-        Manifest manifest = new Manifest("TI-1", "TM-1");
-        manifest.addSwReleaseId("TM-2");
-        this.entityManager.persist(manifest);
+        System.out.println("\n\nImageRepositoryTest: testWriteandRead()\n\n");
+        Image image = new Image("TI-1", "TM-1");
+        image.addSwReleaseId("TM-2");
+        this.entityManager.persist(image);
 
-        Manifest foundManifest = manifestRepository.getOne(manifest.getImageId());
-        assertNotNull(foundManifest);
-        System.out.println("Found Manifest: " + manifest.toString());
+        Image foundImage = imageRepository.getOne(image.getImageId());
+        assertNotNull(foundImage);
+        System.out.println("Found Image: " + image.toString());
         
 
-        Manifest manifest2 = manifestRepository.getOne("IB-1");
-        assertNotNull(manifest2);
-        System.out.println("Found Manifest: " + manifest2.toString());
+        Image image2 = imageRepository.getOne("IB-1");
+        assertNotNull(image2);
+        System.out.println("Found Image: " + image2.toString());
         
         
     }

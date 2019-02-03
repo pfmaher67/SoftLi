@@ -31,8 +31,8 @@ import javax.persistence.Table;
  * @author Patrick Maher<dev@gnoxy.com>
  */
 @Entity
-@Table(name = "Images")
-public class Manifest {
+@Table(name = "Image")
+public class Image {
 
     @Id
     @Column(name = "imageId")
@@ -41,10 +41,10 @@ public class Manifest {
     private String platform;
     @ElementCollection
     @Column(name = "swReleaseId")
-    @CollectionTable(name="manifests", joinColumns= {@JoinColumn(name="image_id")})
+    @CollectionTable(name="manifest", joinColumns= {@JoinColumn(name="image_id")})
     private Set<String> swReleaseIds;
 
-    protected Manifest() {
+    protected Image() {
 
     }
     
@@ -52,7 +52,7 @@ public class Manifest {
         return imageId;
     }
 
-    public Manifest(String imageId, String swReleaseID) {
+    public Image(String imageId, String swReleaseID) {
         this.imageId = imageId;
         this.platform = "undefined";
         if (swReleaseIds == null) {
@@ -61,7 +61,7 @@ public class Manifest {
         swReleaseIds.add(swReleaseID);
     }
 
-    public Manifest(String imageId, String platform, String swReleaseID) {
+    public Image(String imageId, String platform, String swReleaseID) {
         this.imageId = imageId;
         this.platform = platform;
         if (swReleaseIds == null) {
@@ -84,7 +84,7 @@ public class Manifest {
 
     @Override
     public String toString() {
-        return String.format("Manifest[imageId=%s, platform=%s, swReleaseIds=%s]",
+        return String.format("Image[imageId=%s, platform=%s, swReleaseIds=%s]",
                 imageId, platform, swReleaseIds.toString());
     }
 

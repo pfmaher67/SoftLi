@@ -28,7 +28,7 @@ import java.util.Set;
  * @author Patrick Maher<dev@gnoxy.com>
  */
 public class Manifests {
-    private final HashMap<String, Manifest> manifests;
+    private final HashMap<String, Image> manifests;
     LicenseModels lookup;
     
     public Manifests(LicenseModels lookup) {
@@ -51,11 +51,11 @@ public class Manifests {
         if (manifests.containsKey(imageID)) {
             manifests.get(imageID).addSwReleaseId(swReleaseID);
         } else {
-            manifests.put(imageID, new Manifest(imageID, swReleaseID));
+            manifests.put(imageID, new Image(imageID, swReleaseID));
         }
     }
     
-    public Manifest getManifest(String imageID) {
+    public Image getManifest(String imageID) {
         return manifests.get(imageID);
     }
     

@@ -15,7 +15,7 @@
  */
 package com.gnoxy.SoftLi.repository;
 
-import com.gnoxy.SoftLi.am.Manifest;
+import com.gnoxy.SoftLi.am.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,8 +23,8 @@ import org.springframework.stereotype.Repository;
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
-@Repository("ManifestRepository")
-public interface ManifestRepository extends JpaRepository<Manifest, String> {
+@Repository("ImageRepository")
+public interface ImageRepository extends JpaRepository<Image, String> {
     
 
     

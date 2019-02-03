@@ -16,6 +16,8 @@
 package com.gnoxy.SoftLi.repository;
 
 import com.gnoxy.SoftLi.am.LicenseRight;
+import java.util.Collection;
+import java.util.List;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +58,12 @@ public class LicenseRightRepositoryTest {
         LicenseRight foundRight2 = licenseRightRepository.getOne("AB-2-MB-1");
         assertNotNull(foundRight2);
         System.out.println("Found Right2: " + foundRight2.toString());
+        
+        Collection<LicenseRight> rights = licenseRightRepository.findLicenseRightsByAppId("AB-2");
+        assertNotNull(rights);
+        rights.forEach((r) -> {
+            System.out.println(r.toString());
+        });
         
         
     }

@@ -20,12 +20,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.gnoxy.SoftLi.repository.ImageRepository;
 
 /**
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
-public class LicenseRights {
+public class LicenseRightsManager {
+
+    @Autowired
+    ImageRepository manifestRepository;
 
     // All software license rights, indexed by the key: App ID - SW Release ID
     private final HashMap<String, LicenseRight> rights;
@@ -33,7 +38,7 @@ public class LicenseRights {
     private final Manifests manifests;
     private final LicenseModels models;
 
-    public LicenseRights(LicenseModels models, Manifests manifests) {
+    public LicenseRightsManager(LicenseModels models, Manifests manifests) {
         rights = new HashMap<>();
 //        manifests = Initializer.getManifests();  // temporary measure
 //        models = Initializer.getLicenseModels();
@@ -67,10 +72,10 @@ public class LicenseRights {
         String slrKey;
         long quantity;
         // From the image id, check the manifest and get all the Software Release IDs associated with the image
-        Image m = manifests.getManifest(imageID);
+        Image m = manifestRepository.getOne(imageID);
         Set<String> swReleaseIDs = null;
         if (m != null) {
-            swReleaseIDs = manifests.getManifest(imageID).getSwReleaseIds();
+            swReleaseIDs = m.getSwReleaseIds();
         }
         if (swReleaseIDs != null && !swReleaseIDs.isEmpty()) {
             boolean rightsAvailable = true;
