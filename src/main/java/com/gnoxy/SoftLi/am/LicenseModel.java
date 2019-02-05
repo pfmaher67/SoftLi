@@ -23,6 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.hibernate.annotations.Proxy;
 
 /**
  *
@@ -31,6 +32,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "LicenseModel")
+@Proxy(lazy=false)
 public class LicenseModel {
 
     @Id

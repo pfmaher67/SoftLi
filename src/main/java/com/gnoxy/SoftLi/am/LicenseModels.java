@@ -15,7 +15,6 @@
  */
 package com.gnoxy.SoftLi.am;
 
-import com.gnoxy.SoftLi.init.LicenseModelsInitializer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,21 +44,21 @@ public class LicenseModels {
         return modelsMap.get(id);
     }
 
-    public void init(LicenseModelsInitializer lmi) {
-        List<LicenseModelsInitializer.LicenseModelTemplate> l = lmi.getLicenseModelTemplates();
-        Iterator<LicenseModelsInitializer.LicenseModelTemplate> i = l.iterator();
-        while (i.hasNext()) {
-            LicenseModelsInitializer.LicenseModelTemplate t = i.next();
-            LicenseModel model = t.getModel();
-            System.out.println("LicenseModels init() " + model.getId()
-                    + " : " + model.getLicenseMetric().getDescription()
-                    + " : " + model.getSoftwareCategory().getDescription());
-            String id = model.getId();
-            if (!modelsMap.containsKey(id)) {
-                modelsMap.put(id, model);
-            }
-        }
-
-    }
+//    public void init(LicenseModelsInitializer lmi) {
+//        List<LicenseModelsInitializer.LicenseModelTemplate> l = lmi.getLicenseModelTemplates();
+//        Iterator<LicenseModelsInitializer.LicenseModelTemplate> i = l.iterator();
+//        while (i.hasNext()) {
+//            LicenseModelsInitializer.LicenseModelTemplate t = i.next();
+//            LicenseModel model = t.getModel();
+//            System.out.println("LicenseModels init() " + model.getId()
+//                    + " : " + model.getLicenseMetric().getDescription()
+//                    + " : " + model.getSoftwareCategory().getDescription());
+//            String id = model.getId();
+//            if (!modelsMap.containsKey(id)) {
+//                modelsMap.put(id, model);
+//            }
+//        }
+//
+//    }
 
 }

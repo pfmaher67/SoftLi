@@ -17,10 +17,7 @@
 
 package com.gnoxy.SoftLi.am;
 
-import com.gnoxy.SoftLi.init.ManifestsInitializer;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -36,16 +33,16 @@ public class Manifests {
         this.lookup = lookup;
     }
     
-    public void init(ManifestsInitializer mi) {
-        List<ManifestsInitializer.ManifestTemplate> l = mi.getManifestTemplates();
-        Iterator<ManifestsInitializer.ManifestTemplate> i = l.iterator();
-        while (i.hasNext()) {
-            ManifestsInitializer.ManifestTemplate t = i.next();
-            addSwReleaseID(t.getImageId(), t.getSwReleaseId());
-            System.out.println("Manifest init(): Adding manifest: "
-                    + t.getImageId() + " : " + t.getSwReleaseId());
-        }        
-    }
+//    public void init(ManifestsInitializer mi) {
+//        List<ManifestsInitializer.ManifestTemplate> l = mi.getManifestTemplates();
+//        Iterator<ManifestsInitializer.ManifestTemplate> i = l.iterator();
+//        while (i.hasNext()) {
+//            ManifestsInitializer.ManifestTemplate t = i.next();
+//            addSwReleaseID(t.getImageId(), t.getSwReleaseId());
+//            System.out.println("Manifest init(): Adding manifest: "
+//                    + t.getImageId() + " : " + t.getSwReleaseId());
+//        }        
+//    }
     
     public void addSwReleaseID(String imageID, String swReleaseID) {
         if (manifests.containsKey(imageID)) {

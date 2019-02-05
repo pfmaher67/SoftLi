@@ -22,6 +22,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -29,6 +30,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.hibernate.annotations.Proxy;
 
 /**
  *
@@ -36,6 +38,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "Image")
+@Proxy(lazy=false)
 public class Image {
 
     @Id
@@ -49,7 +52,7 @@ public class Image {
     @Transient
     private Set<String> swReleaseIds;
     
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="manifest", joinColumns = @JoinColumn(name = "imageId", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "swReleaseId", referencedColumnName = "id"))
     private List<SoftwareRelease> softwareReleases;

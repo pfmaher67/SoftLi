@@ -32,8 +32,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class ImageRepositoryTest {
-    @Autowired
-    TestEntityManager entityManager;
+//    @Autowired
+//    TestEntityManager entityManager;
     
     @Autowired
     ImageRepository imageRepository;
@@ -50,7 +50,7 @@ public class ImageRepositoryTest {
 //        System.out.println("Found Image: " + foundImage.toString());
         
 
-        Image image2 = imageRepository.getOne("IB-1");
+        Image image2 = imageRepository.getOne("IB-3");
         assertNotNull(image2);
         System.out.println("Found Image2: " + image2.toString());
         

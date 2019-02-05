@@ -15,18 +15,11 @@
  */
 package com.gnoxy.SoftLi.controller;
 
-import com.gnoxy.SoftLi.am.LicenseModels;
 import com.gnoxy.SoftLi.am.LicenseRight;
 import com.gnoxy.SoftLi.am.StatusMessage;
-import com.gnoxy.SoftLi.am.LicenseRights;
 import com.gnoxy.SoftLi.am.LicenseRightsManager;
-import com.gnoxy.SoftLi.am.Manifests;
-import com.gnoxy.SoftLi.init.LicenseModelsInitializer;
-import com.gnoxy.SoftLi.init.LicenseRightsInitializer;
-import com.gnoxy.SoftLi.init.ManifestsInitializer;
-import com.gnoxy.SoftLi.repository.LicenseModelRepository;
+import com.gnoxy.SoftLi.repository.ImageRepository;
 import com.gnoxy.SoftLi.repository.LicenseRightRepository;
-import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,27 +36,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RestController
 public class SoftLiController {
 
-    private LicenseRights licenseRights;
     @Value("${spring.application.name}")
     private String appName;
     @Value("${am.database}")
     private String db;
+    LicenseRightsManager lrm;
     
     @Autowired
     private LicenseRightRepository licenseRightRepository;
     
     @Autowired
-    private LicenseModelRepository licenseModelRepository;
+    private ImageRepository imageRepository;
 
-    @Autowired
-    private LicenseModelsInitializer lmi;
+//    @Autowired
+//    private EntityManager entityManager;
     
-    @Autowired
-    private ManifestsInitializer mi;
-    
-    @Autowired
-    private LicenseRightsInitializer lri;
-
     @RequestMapping("/reserveRights")
     @ResponseBody
     public StatusMessage reserve(@RequestParam(value = "appID", defaultValue = "0") String appID,
@@ -71,9 +58,7 @@ public class SoftLiController {
             @RequestParam(value = "vCPUs") String vCPUs,
             @RequestParam(value = "ram") String ram,
             @RequestParam(value = "instances") String instances) {
-//        return licenseRights.reserveRights(appID, imageID,
-//                Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
-        LicenseRightsManager lrm = new LicenseRightsManager();
+
         return lrm.reserveRights(appID, imageID,
                 Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
     }
@@ -85,45 +70,35 @@ public class SoftLiController {
             @RequestParam(value = "vCPUs") String vCPUs,
             @RequestParam(value = "ram") String ram,
             @RequestParam(value = "instances") String instances) {
-        LicenseRightsManager lrm = new LicenseRightsManager();
         return lrm.releaseRights(appID, imageID,
                 Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
     }
 
-    @RequestMapping("/createRights")
-    public StatusMessage create(@RequestParam(value = "appID", defaultValue = "0") String appID,
-            @RequestParam(value = "swReleaseID", defaultValue = "0") String swReleaseID,
-            @RequestParam(value = "quantity", defaultValue = "0") String quantity) {
-        return licenseRights.addRight(appID, swReleaseID, Long.parseLong(quantity));
-    }
+//    @RequestMapping("/createRights")
+//    public StatusMessage create(@RequestParam(value = "appID", defaultValue = "0") String appID,
+//            @RequestParam(value = "swReleaseID", defaultValue = "0") String swReleaseID,
+//            @RequestParam(value = "quantity", defaultValue = "0") String quantity) {
+//        return licenseRights.addRight(appID, swReleaseID, Long.parseLong(quantity));
+//    }
+
+//    @RequestMapping("/addRight")
+//    public StatusMessage add(@RequestParam(value = "appID", defaultValue = "0") String appID,
+//            @RequestParam(value = "swReleaseID", defaultValue = "0") String swReleaseID,
+//            @RequestParam(value = "quantity", defaultValue = "0") String quantity) {
+//        LicenseRight l = new LicenseRight(appID, swReleaseID, Long.parseLong(quantity));
+//        licenseRightRepository.save(l);
+//        return licenseRights.addRight(appID, swReleaseID, Long.parseLong(quantity));
+//    }
 
     @RequestMapping("/listRights")
-    public HashMap<String, LicenseRight> list() {
-        return licenseRights.getSoftwareLicenseRights();
-    }
-    
-    @RequestMapping("/addRight")
-    public StatusMessage add(@RequestParam(value = "appID", defaultValue = "0") String appID,
-            @RequestParam(value = "swReleaseID", defaultValue = "0") String swReleaseID,
-            @RequestParam(value = "quantity", defaultValue = "0") String quantity) {
-        LicenseRight l = new LicenseRight(appID, swReleaseID, Long.parseLong(quantity));
-        licenseRightRepository.save(l);
-        return licenseRights.addRight(appID, swReleaseID, Long.parseLong(quantity));
-    }
-
-    @RequestMapping("/listRights2")
-    public List<LicenseRight> list2() {
+    public List<LicenseRight> list() {
         return licenseRightRepository.findAll();
     }
 
     @PostConstruct
     public void init() {
-        LicenseModels models = new LicenseModels();
-        models.init(lmi);
-        Manifests manifests = new Manifests(models);
-        manifests.init(mi);
-        licenseRights = new LicenseRights(models, manifests);
-        licenseRights.init(lri);        
+        lrm = new LicenseRightsManager(imageRepository, licenseRightRepository);
+//        , entityManager);
         
         System.out.println("Running application: " + appName);
         System.out.println("Using Repository: " + db);

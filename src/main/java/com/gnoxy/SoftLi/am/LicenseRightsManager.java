@@ -29,19 +29,27 @@ import javax.persistence.EntityManager;
  */
 public class LicenseRightsManager {
 
-    @Autowired
-    EntityManager entityManager;
+//    @Autowired
+//    private final EntityManager entityManager;
 
-    @Autowired
-    ImageRepository imageRepository;
+//    @Autowired
+    private final ImageRepository imageRepository;
 
-    @Autowired
-    LicenseRightRepository licenseRightRepository;
+//    @Autowired
+    private final LicenseRightRepository licenseRightRepository;
+
+    public LicenseRightsManager(ImageRepository imageRepository,
+            LicenseRightRepository licenseRightRepository) {
+//            EntityManager entityManager) {
+        this.imageRepository = imageRepository;
+        this.licenseRightRepository = licenseRightRepository;
+//        this.entityManager = entityManager;
+    }
 
     public StatusMessage reserveRights(String appID, String imageID,
             long vCPU, long ram, long instances) {
         StatusMessage statusMessage = new StatusMessage();
-        String slrKey;
+        String rKey;
         long quantity;
         // From the image id, check the manifest and get all the Software Release IDs associated with the image
         Image image = imageRepository.getOne(imageID);
@@ -50,17 +58,18 @@ public class LicenseRightsManager {
             swReleases = image.getSoftwareReleases();
         }
 
-        HashMap<String, LicenseRight> rights
+        HashMap<String, LicenseRight> appRights
                 = getLicenseRightsHash(licenseRightRepository.findLicenseRightsByAppId(appID));
 
         if (swReleases != null && !swReleases.isEmpty()) {
             boolean rightsAvailable = true;
             statusMessage.setMessage("App ID = " + appID);
             // First check each swRelease to see if the App has enough rights to set
+
             for (SoftwareRelease swRelease : swReleases) {
-                slrKey = appID + "-" + swRelease.getId();
-                if (rights.containsKey(slrKey)) {
-                    LicenseRight slr = rights.get(slrKey);
+                rKey = appID + "-" + swRelease.getLicenseModel().getId();
+                if (appRights.containsKey(rKey)) {
+                    LicenseRight lr = appRights.get(rKey);
                     if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
                         quantity = instances;
                     } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.RAM)) {
@@ -71,11 +80,11 @@ public class LicenseRightsManager {
                         quantity = -1;   // TODO: Handle this case
                     }
 
-                    if (!slr.hasAvailableRights(quantity)) {
+                    if (!lr.hasAvailableRights(quantity)) {
                         rightsAvailable = false;
-                        statusMessage.setElement(new StatusMessageElement("Rights are not available for: ", slr.copy()));
+                        statusMessage.setElement(new StatusMessageElement("Rights are not available for: ", lr.copy()));
                     } else {
-                        statusMessage.setElement(new StatusMessageElement("Rights are available for: ", slr.copy()));
+                        statusMessage.setElement(new StatusMessageElement("Rights are available for: ", lr.copy()));
                     }
                 } else {
                     // !licenseRights.containsKey(slrKey)
@@ -92,9 +101,9 @@ public class LicenseRightsManager {
             // All rights have been checked at this point.
             if (rightsAvailable) {
                 for (SoftwareRelease swRelease : swReleases) {
-                    slrKey = appID + "-" + swRelease.getId();
-                    if (rights.containsKey(slrKey)) {
-                        LicenseRight slr = rights.get(slrKey);
+                    rKey = appID + "-" + swRelease.getLicenseModel().getId();
+                    if (appRights.containsKey(rKey)) {
+                        LicenseRight slr = appRights.get(rKey);
                         if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
                             quantity = instances;
                         } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.RAM)) {
@@ -106,7 +115,7 @@ public class LicenseRightsManager {
                         }
                         if (swRelease.getLicenseModel().getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
                             slr.reserveRights(quantity);
-                            entityManager.persist(slr);
+//                            entityManager.persist(slr);
                             statusMessage.setElement(new StatusMessageElement("Rights reserverd for: ", slr));
                         }
                     }
@@ -127,7 +136,7 @@ public class LicenseRightsManager {
     public StatusMessage releaseRights(String appID, String imageID,
             long vCPU, long ram, long instances) {
         StatusMessage statusMessage = new StatusMessage();
-        String slrKey;
+        String rKey;
         long quantity;
         // From the image id, check the manifest and get all the Software Release IDs associated with the image
         Image image = imageRepository.getOne(imageID);
@@ -143,9 +152,9 @@ public class LicenseRightsManager {
             statusMessage.setMessage("App ID = " + appID);
 
             for (SoftwareRelease swRelease : swReleases) {
-                slrKey = appID + "-" + swRelease.getId();
-                if (rights.containsKey(slrKey)) {
-                    LicenseRight slr = rights.get(slrKey);
+                rKey = appID + "-" + swRelease.getLicenseModel().getId();
+                if (rights.containsKey(rKey)) {
+                    LicenseRight lr = rights.get(rKey);
                     if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
                         quantity = instances;
                     } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.RAM)) {
@@ -156,9 +165,9 @@ public class LicenseRightsManager {
                         quantity = -1;   // TODO: Handle this case
                     }
                     if (swRelease.getLicenseModel().getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
-                        slr.releaseRights(quantity);
-                        entityManager.persist(slr);
-                        statusMessage.setElement(new StatusMessageElement("Rights released for: ", slr));
+                        lr.releaseRights(quantity);
+//                        entityManager.persist(slr);
+                        statusMessage.setElement(new StatusMessageElement("Rights released for: ", lr));
                     }
                 }
             }
