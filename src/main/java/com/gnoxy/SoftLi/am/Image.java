@@ -18,12 +18,9 @@ package com.gnoxy.SoftLi.am;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -46,9 +43,6 @@ public class Image {
     private String imageId;
     @Column(name = "platform")
     private String platform;
-//    @ElementCollection
-//    @Column(name = "swReleaseId")
-//    @CollectionTable(name="manifest", joinColumns= {@JoinColumn(name="imageId")})
     @Transient
     private Set<String> swReleaseIds;
     

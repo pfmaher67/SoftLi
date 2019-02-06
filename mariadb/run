@@ -1,0 +1,5 @@
+#!/bin/bash
+
+docker run --name maria-softli -v ~/dev/SoftLi/mariadb/entrypoint:/docker-entrypoint-initdb.d  -p 3306:3306 -e MYSQL_ROOT_PASSWORD=mypw -d mariadb
+
+

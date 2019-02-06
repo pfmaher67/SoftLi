@@ -48,8 +48,6 @@ public class SoftLiController {
     @Autowired
     private ImageRepository imageRepository;
 
-//    @Autowired
-//    private EntityManager entityManager;
     
     @RequestMapping("/reserveRights")
     @ResponseBody

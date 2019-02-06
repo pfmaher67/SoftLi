@@ -41,9 +41,6 @@ public class SoftwareRelease {
     private String name;
     @Column(name = "version")
     private String version;
-////    @Column(name = "licenseModelId")
-//    @Transient
-//    private String licenseModelId;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="licenseModelId")
@@ -57,7 +54,6 @@ public class SoftwareRelease {
         this.id = id;
         this.name = name;
         this.version = version;
-//        this.licenseModelId = licenseModelId;
     }
 
     public String getId() {
@@ -71,10 +67,6 @@ public class SoftwareRelease {
     public String getVersion() {
         return version;
     }
-    
-//    public String getLicenseModelId() {
-//        return licenseModelId;
-//    }
     
     public LicenseModel getLicenseModel() {
         return licenseModel;

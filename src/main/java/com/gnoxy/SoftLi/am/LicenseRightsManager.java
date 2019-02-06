@@ -17,11 +17,10 @@ package com.gnoxy.SoftLi.am;
 
 import java.util.HashMap;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.gnoxy.SoftLi.repository.ImageRepository;
 import com.gnoxy.SoftLi.repository.LicenseRightRepository;
 import java.util.Collection;
-import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 
 /**
  *
@@ -29,43 +28,40 @@ import javax.persistence.EntityManager;
  */
 public class LicenseRightsManager {
 
-//    @Autowired
-//    private final EntityManager entityManager;
-
-//    @Autowired
     private final ImageRepository imageRepository;
-
-//    @Autowired
     private final LicenseRightRepository licenseRightRepository;
 
     public LicenseRightsManager(ImageRepository imageRepository,
             LicenseRightRepository licenseRightRepository) {
-//            EntityManager entityManager) {
         this.imageRepository = imageRepository;
         this.licenseRightRepository = licenseRightRepository;
-//        this.entityManager = entityManager;
     }
 
+    
+    // TODO: Create one method to service both reserve and release rights
     public StatusMessage reserveRights(String appID, String imageID,
             long vCPU, long ram, long instances) {
         StatusMessage statusMessage = new StatusMessage();
         String rKey;
         long quantity;
-        // From the image id, check the manifest and get all the Software Release IDs associated with the image
-        Image image = imageRepository.getOne(imageID);
+
+        Image image = null;
         List<SoftwareRelease> swReleases = null;
-        if (image != null) {
+
+        if (imageRepository.existsById(imageID)) {
+            image = imageRepository.getOne(imageID);
             swReleases = image.getSoftwareReleases();
         }
-
+        
         HashMap<String, LicenseRight> appRights
                 = getLicenseRightsHash(licenseRightRepository.findLicenseRightsByAppId(appID));
+        // TODO Check appRights == null and send error message to this effect
 
         if (swReleases != null && !swReleases.isEmpty()) {
             boolean rightsAvailable = true;
             statusMessage.setMessage("App ID = " + appID);
-            // First check each swRelease to see if the App has enough rights to set
 
+            // First check each swRelease to see if the App has enough rights to set
             for (SoftwareRelease swRelease : swReleases) {
                 rKey = appID + "-" + swRelease.getLicenseModel().getId();
                 if (appRights.containsKey(rKey)) {
@@ -82,9 +78,9 @@ public class LicenseRightsManager {
 
                     if (!lr.hasAvailableRights(quantity)) {
                         rightsAvailable = false;
-                        statusMessage.setElement(new StatusMessageElement("Rights are not available for: ", lr.copy()));
+                        statusMessage.setElement(new StatusMessageElement("Rights are not available for: " + swRelease.getId(), lr.copy()));
                     } else {
-                        statusMessage.setElement(new StatusMessageElement("Rights are available for: ", lr.copy()));
+                        statusMessage.setElement(new StatusMessageElement("Rights are available for: " + swRelease.getId(), lr.copy()));
                     }
                 } else {
                     // !licenseRights.containsKey(slrKey)
@@ -115,8 +111,8 @@ public class LicenseRightsManager {
                         }
                         if (swRelease.getLicenseModel().getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
                             slr.reserveRights(quantity);
-//                            entityManager.persist(slr);
-                            statusMessage.setElement(new StatusMessageElement("Rights reserverd for: ", slr));
+                            licenseRightRepository.save(slr);
+                            statusMessage.setElement(new StatusMessageElement("Rights reserverd for: " + swRelease.getId(), slr));
                         }
                     }
                 }
@@ -127,7 +123,7 @@ public class LicenseRightsManager {
                 statusMessage.setMessage("Rights are not available for all titles ");
             }
         } else {
-            // (swReleaseIDs.isEmpty())
+            // (swReleases.isEmpty())
             statusMessage.setMessage("No manifest found for ImageID: " + imageID); //TO DO: Test this condition
         }
         return statusMessage;
@@ -138,10 +134,12 @@ public class LicenseRightsManager {
         StatusMessage statusMessage = new StatusMessage();
         String rKey;
         long quantity;
-        // From the image id, check the manifest and get all the Software Release IDs associated with the image
-        Image image = imageRepository.getOne(imageID);
+
+        Image image = null;
         List<SoftwareRelease> swReleases = null;
-        if (image != null) {
+
+        if (imageRepository.existsById(imageID)) {
+            image = imageRepository.getOne(imageID);
             swReleases = image.getSoftwareReleases();
         }
 
@@ -166,7 +164,7 @@ public class LicenseRightsManager {
                     }
                     if (swRelease.getLicenseModel().getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
                         lr.releaseRights(quantity);
-//                        entityManager.persist(slr);
+                        licenseRightRepository.save(lr);
                         statusMessage.setElement(new StatusMessageElement("Rights released for: ", lr));
                     }
                 }
@@ -174,13 +172,13 @@ public class LicenseRightsManager {
             statusMessage.setStatus(StatusMessage.SUCCESS);
             statusMessage.setMessage(statusMessage.getMessage().concat(". Rights have been released"));
         } else {
-            // (swReleaseIDs.isEmpty())
+            // (swReleases.isEmpty())
             statusMessage.setMessage("No manifest found for ImageID: " + imageID); //TO DO: Test this condition
         }
         return statusMessage;
     }
 
-    public HashMap<String, LicenseRight> getLicenseRightsHash(Collection<LicenseRight> licenseRights) {
+    private HashMap<String, LicenseRight> getLicenseRightsHash(Collection<LicenseRight> licenseRights) {
         HashMap<String, LicenseRight> lHash = new HashMap<>();
         licenseRights.forEach((l) -> {
             lHash.put(l.getId(), l);

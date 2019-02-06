@@ -74,11 +74,17 @@ public class SoftLiControllerIT {
 
     
     @Test
-    public void testReserveRights() throws Exception {
+    public void testReserveandReleasesRights() throws Exception {
         System.out.println("\n\nIntegration Testing /reserveRights\n\n");
         mockMvc.perform(get("/reserveRights?appID=AB-2&imageID=IB-3&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("elements.*.licenseRight.licenseModelId", hasItem(is("MB-5"))));
+
+        System.out.println("Integration Testing /releaseRights\n\n");
+        mockMvc.perform(get("/reserveRights?appID=AB-2&imageID=IB-3&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("elements.*.licenseRight.licenseModelId", hasItem(is("MB-5"))));
+        
     }
 
     
