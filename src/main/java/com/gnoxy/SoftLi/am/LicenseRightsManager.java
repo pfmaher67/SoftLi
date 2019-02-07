@@ -20,7 +20,6 @@ import java.util.List;
 import com.gnoxy.SoftLi.repository.ImageRepository;
 import com.gnoxy.SoftLi.repository.LicenseRightRepository;
 import java.util.Collection;
-import javax.persistence.EntityNotFoundException;
 
 /**
  *
@@ -37,10 +36,18 @@ public class LicenseRightsManager {
         this.licenseRightRepository = licenseRightRepository;
     }
 
-    
-    // TODO: Create one method to service both reserve and release rights
     public StatusMessage reserveRights(String appID, String imageID,
             long vCPU, long ram, long instances) {
+        return manageRights(appID, imageID, vCPU, ram, instances, ManagementAction.Reserve);
+    }
+
+    public StatusMessage releaseRights(String appID, String imageID,
+            long vCPU, long ram, long instances) {
+        return manageRights(appID, imageID, vCPU, ram, instances, ManagementAction.Release);
+    }
+
+    private StatusMessage manageRights(String appID, String imageID,
+            long vCPU, long ram, long instances, ManagementAction action) {
         StatusMessage statusMessage = new StatusMessage();
         String rKey;
         long quantity;
@@ -52,50 +59,59 @@ public class LicenseRightsManager {
             image = imageRepository.getOne(imageID);
             swReleases = image.getSoftwareReleases();
         }
-        
-        HashMap<String, LicenseRight> appRights
-                = getLicenseRightsHash(licenseRightRepository.findLicenseRightsByAppId(appID));
-        // TODO Check appRights == null and send error message to this effect
+
+        Collection<LicenseRight> licenseRights = licenseRightRepository.findLicenseRightsByAppId(appID);
+        if (licenseRights.isEmpty()) {
+            statusMessage.setMessage("No rights are available for App ID: " + appID);
+            return statusMessage;
+        }
+        HashMap<String, LicenseRight> appRights = new HashMap<>();
+        licenseRights.forEach((l) -> {
+            appRights.put(l.getId(), l);
+        });
 
         if (swReleases != null && !swReleases.isEmpty()) {
             boolean rightsAvailable = true;
             statusMessage.setMessage("App ID = " + appID);
 
-            // First check each swRelease to see if the App has enough rights to set
-            for (SoftwareRelease swRelease : swReleases) {
-                rKey = appID + "-" + swRelease.getLicenseModel().getId();
-                if (appRights.containsKey(rKey)) {
-                    LicenseRight lr = appRights.get(rKey);
-                    if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
-                        quantity = instances;
-                    } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.RAM)) {
-                        quantity = ram;
-                    } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.VCPU)) {
-                        quantity = vCPU;
-                    } else {
-                        quantity = -1;   // TODO: Handle this case
-                    }
+            if (action == ManagementAction.Reserve) {
+                // First check each swRelease to see if the App has enough rights to set
+                for (SoftwareRelease swRelease : swReleases) {
+                    rKey = appID + "-" + swRelease.getLicenseModel().getId();
+                    if (appRights.containsKey(rKey)) {
+                        LicenseRight lr = appRights.get(rKey);
+                        if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
+                            quantity = instances;
+                        } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.RAM)) {
+                            quantity = ram;
+                        } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.VCPU)) {
+                            quantity = vCPU;
+                        } else {
+                            quantity = -1;   // TODO: Handle this case
+                        }
 
-                    if (!lr.hasAvailableRights(quantity)) {
-                        rightsAvailable = false;
-                        statusMessage.setElement(new StatusMessageElement("Rights are not available for: " + swRelease.getId(), lr.copy()));
+                        if (!lr.hasAvailableRights(quantity)) {
+                            rightsAvailable = false;
+                            statusMessage.setElement(new StatusMessageElement("Rights are not available for: " + swRelease.getId(), lr.copy()));
+                        } else {
+                            statusMessage.setElement(new StatusMessageElement("Rights are available for: " + swRelease.getId(), lr.copy()));
+                        }
                     } else {
-                        statusMessage.setElement(new StatusMessageElement("Rights are available for: " + swRelease.getId(), lr.copy()));
-                    }
-                } else {
-                    // !licenseRights.containsKey(slrKey)
-                    if (swRelease.getLicenseModel().getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
-                        rightsAvailable = false;
-                        statusMessage.setElement(new StatusMessageElement("Application doesn't have license right for software, Release ID: "
-                                + swRelease.getId(), null));
-                    } else {
-                        statusMessage.setElement(new StatusMessageElement("Non-application software, Release ID: "
-                                + swRelease.getId(), null));
+                        // !licenseRights.containsKey(slrKey)
+                        if (swRelease.getLicenseModel().getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
+                            rightsAvailable = false;
+                            statusMessage.setElement(new StatusMessageElement("Application doesn't have license right for software, Release ID: "
+                                    + swRelease.getId(), null));
+                        } else {
+                            statusMessage.setElement(new StatusMessageElement("Non-application software, Release ID: "
+                                    + swRelease.getId(), null));
+                        }
                     }
                 }
+                // All rights have been checked at this point.
             }
-            // All rights have been checked at this point.
-            if (rightsAvailable) {
+            if ((action == ManagementAction.Reserve && rightsAvailable)
+                    || action == ManagementAction.Release) {
                 for (SoftwareRelease swRelease : swReleases) {
                     rKey = appID + "-" + swRelease.getLicenseModel().getId();
                     if (appRights.containsKey(rKey)) {
@@ -110,16 +126,25 @@ public class LicenseRightsManager {
                             quantity = -1;   // TODO: Handle this case
                         }
                         if (swRelease.getLicenseModel().getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
-                            slr.reserveRights(quantity);
+                            if (action == ManagementAction.Reserve) {
+                                slr.reserveRights(quantity);
+                                statusMessage.setElement(new StatusMessageElement("Rights reserverd for: " + swRelease.getId(), slr));
+                            } else {
+                                slr.releaseRights(quantity);
+                                statusMessage.setElement(new StatusMessageElement("Rights released for: " + swRelease.getId(), slr));
+                            }
                             licenseRightRepository.save(slr);
-                            statusMessage.setElement(new StatusMessageElement("Rights reserverd for: " + swRelease.getId(), slr));
                         }
                     }
                 }
                 statusMessage.setStatus(StatusMessage.SUCCESS);
-                statusMessage.setMessage(statusMessage.getMessage().concat(". Rights successfully reserved"));
+                if (action == ManagementAction.Reserve) {
+                    statusMessage.setMessage(statusMessage.getMessage().concat(". Rights successfully reserved"));
+                } else {
+                    statusMessage.setMessage(statusMessage.getMessage().concat(". Rights successfully released"));
+                }
             } else {
-                // !rightsAvailable
+                // choice == RightsManagement.Reserve && !rightsAvailable
                 statusMessage.setMessage("Rights are not available for all titles ");
             }
         } else {
@@ -129,61 +154,9 @@ public class LicenseRightsManager {
         return statusMessage;
     }
 
-    public StatusMessage releaseRights(String appID, String imageID,
-            long vCPU, long ram, long instances) {
-        StatusMessage statusMessage = new StatusMessage();
-        String rKey;
-        long quantity;
-
-        Image image = null;
-        List<SoftwareRelease> swReleases = null;
-
-        if (imageRepository.existsById(imageID)) {
-            image = imageRepository.getOne(imageID);
-            swReleases = image.getSoftwareReleases();
-        }
-
-        HashMap<String, LicenseRight> rights
-                = getLicenseRightsHash(licenseRightRepository.findLicenseRightsByAppId(appID));
-
-        if (swReleases != null && !swReleases.isEmpty()) {
-            statusMessage.setMessage("App ID = " + appID);
-
-            for (SoftwareRelease swRelease : swReleases) {
-                rKey = appID + "-" + swRelease.getLicenseModel().getId();
-                if (rights.containsKey(rKey)) {
-                    LicenseRight lr = rights.get(rKey);
-                    if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
-                        quantity = instances;
-                    } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.RAM)) {
-                        quantity = ram;
-                    } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.VCPU)) {
-                        quantity = vCPU;
-                    } else {
-                        quantity = -1;   // TODO: Handle this case
-                    }
-                    if (swRelease.getLicenseModel().getSoftwareCategory().equals(SoftwareCategory.APPLICATION)) {
-                        lr.releaseRights(quantity);
-                        licenseRightRepository.save(lr);
-                        statusMessage.setElement(new StatusMessageElement("Rights released for: ", lr));
-                    }
-                }
-            }
-            statusMessage.setStatus(StatusMessage.SUCCESS);
-            statusMessage.setMessage(statusMessage.getMessage().concat(". Rights have been released"));
-        } else {
-            // (swReleases.isEmpty())
-            statusMessage.setMessage("No manifest found for ImageID: " + imageID); //TO DO: Test this condition
-        }
-        return statusMessage;
-    }
-
-    private HashMap<String, LicenseRight> getLicenseRightsHash(Collection<LicenseRight> licenseRights) {
-        HashMap<String, LicenseRight> lHash = new HashMap<>();
-        licenseRights.forEach((l) -> {
-            lHash.put(l.getId(), l);
-        });
-        return lHash;
+    private enum ManagementAction {
+        Reserve,
+        Release
     }
 
 }
