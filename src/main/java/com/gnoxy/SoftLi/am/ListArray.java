@@ -19,24 +19,6 @@ package com.gnoxy.SoftLi.am;
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
-public class StatusMessageElement {
-    private String message;
-    private final LicenseRight right;
+public class ListArray {
     
-    public StatusMessageElement(String message, LicenseRight right) {
-        this.message = message;
-        this.right = right;
-    }
-    
-    public String getMessage() {
-        return message;
-    }
-    
-    public void setMessage(String message) {
-        this.message = message;
-    }
-    
-    public LicenseRight getLicenseRight() {
-        return right;
-    }
 }

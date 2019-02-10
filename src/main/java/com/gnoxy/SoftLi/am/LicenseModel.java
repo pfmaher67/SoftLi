@@ -41,9 +41,6 @@ public class LicenseModel {
     private int licenseMetricId = -1;
     @Column(name = "softwareCategoryId")
     private int softwareCategoryId = -1;
-//  Do I need to set this mapping, if I don't intend to use this relationship?    
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "licenseModel")
-//    private List<SoftwareRelease> swReleases;
 
     @Transient
     private LicenseMetric metric;
@@ -74,6 +71,14 @@ public class LicenseModel {
 
     public String getId() {
         return id;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
     }
 
     public LicenseMetric getLicenseMetric() {

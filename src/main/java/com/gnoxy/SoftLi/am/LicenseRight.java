@@ -18,7 +18,10 @@ package com.gnoxy.SoftLi.am;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Proxy;
 
@@ -32,21 +35,25 @@ public class LicenseRight {
     private String id;
     @Column(name = "appId")
     private String appId;
-    @Column(name = "licenseModelId")
-    private String licenseModelId;
+//    @Column(name = "licenseModelId")
+//    private String licenseModelId;
     @Column(name = "qtyOwned")
     private long qtyOwned;
     @Column(name = "qtyReserved")
     private long qtyReserved;
     
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="licenseModelId")
+    private LicenseModel licenseModel;    
+    
     public LicenseRight() {
         
     }
     
-    public LicenseRight(String appID, String licenseModelId, long quantity) {
-        this.id = appID + "-" + licenseModelId;
+    public LicenseRight(String appID, LicenseModel licenseModel, long quantity) {
+        this.id = appID + "-" + licenseModel.getId();
         this.appId = appID;
-        this.licenseModelId = licenseModelId;
+//        this.licenseModelId = licenseModelId;
         this.qtyOwned = quantity;
         qtyReserved = 0;
     }
@@ -67,12 +74,20 @@ public class LicenseRight {
         this.appId = appId;
     }
 
-    public String getLicenseModelId() {
-        return licenseModelId;
+//    public String getLicenseModelId() {
+//        return licenseModelId;
+//    }
+//    
+//    public void setLicenseModelId(String licenseModelId) {
+//        this.licenseModelId = licenseModelId;
+//    }
+    
+    public LicenseModel getLicenseModel() {
+        return licenseModel;
     }
     
-    public void setLicenseModelId(String licenseModelId) {
-        this.licenseModelId = licenseModelId;
+    public void setLicenseModel(LicenseModel licenseModel) {
+        this.licenseModel = licenseModel;
     }
 
     public long getQuantityOwned() {
@@ -93,8 +108,8 @@ public class LicenseRight {
     
     @Override
     public String toString() {
-        return String.format("LicenseRight[appId=%s, licenseModelId=%s, qtyOwned=%d, qtyReserved=%d]",
-                appId, licenseModelId, qtyOwned, qtyReserved);
+        return String.format("LicenseRight[appId=%s, licenseModel=%s, qtyOwned=%d, qtyReserved=%d]",
+                appId, licenseModel, qtyOwned, qtyReserved);
     }
 
     public boolean reserveRights(long quantity) {
@@ -124,7 +139,7 @@ public class LicenseRight {
     public LicenseRight copy() {
         LicenseRight l = new LicenseRight(
                 this.appId,
-                this.licenseModelId,
+                this.licenseModel,
                 this.qtyOwned
         );
         l.reserveRights(qtyReserved);

@@ -16,6 +16,7 @@
 package com.gnoxy.SoftLi.am;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -24,14 +25,17 @@ import java.util.ArrayList;
 public class StatusMessage {
 
     public static final int SUCCESS = 0;
-    public static final int FAILURE = 1;
+    public static final int NO_STATUS = 1;
+    public static final int NO_IMAGE = 2;
+    public static final int RIGHTS_NOT_AVAILABLE = 3;
+    public static final int NO_MANIFEST = 4;
 
     private int status;
     private String message;
-    private ArrayList<StatusMessageElement> elements;
+    private List<StatusMessageElement> elements;
 
     public StatusMessage() {
-        status = FAILURE;
+        status = NO_STATUS;
         message = "";
         elements = new ArrayList<>();
     }
@@ -71,7 +75,7 @@ public class StatusMessage {
         elements.add(element);
     }
 
-    public ArrayList<StatusMessageElement> getElements() {
+    public List<StatusMessageElement> getElements() {
         return elements;
     }
 

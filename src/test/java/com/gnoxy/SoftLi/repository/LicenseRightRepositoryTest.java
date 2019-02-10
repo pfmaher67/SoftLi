@@ -15,7 +15,10 @@
  */
 package com.gnoxy.SoftLi.repository;
 
+import com.gnoxy.SoftLi.am.LicenseMetric;
+import com.gnoxy.SoftLi.am.LicenseModel;
 import com.gnoxy.SoftLi.am.LicenseRight;
+import com.gnoxy.SoftLi.am.SoftwareCategory;
 import java.util.Collection;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
@@ -42,7 +45,8 @@ public class LicenseRightRepositoryTest {
     @Test
     public void testWriteAndRead() {
         System.out.println("\n\nLicenseRightRepositoryTest: testWriteandRead()\n\n");
-        LicenseRight licenseRight = new LicenseRight("A-4", "TM-4", 24 );
+        LicenseRight licenseRight = new LicenseRight("A-4", 
+                new LicenseModel("TM-4", LicenseMetric.VCPU, SoftwareCategory.APPLICATION), 24 );
         this.entityManager.persist(licenseRight);
         
         LicenseRight foundRight = licenseRightRepository.getOne(licenseRight.getId());

@@ -15,6 +15,7 @@
  */
 package com.gnoxy.SoftLi.controller;
 
+import com.gnoxy.SoftLi.am.StatusMessage;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 
@@ -52,9 +53,6 @@ public class SoftLiControllerIT {
 
     @Autowired
     SoftLiController softLiController;
-    
-//    @Autowired
-//    TestEntityManager entityManager;    
 
     @Before
     public void setup() throws Exception {
@@ -69,7 +67,7 @@ public class SoftLiControllerIT {
         System.out.println("\n\nIntegration Testing /listRights\n\n");
         mockMvc.perform(get("/listRights").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("*.licenseModelId", hasItem(is("MB-1"))));
+                .andExpect(jsonPath("*.licenseModel.id", hasItem(is("MB-1"))));
     }
 
     
@@ -78,13 +76,50 @@ public class SoftLiControllerIT {
         System.out.println("\n\nIntegration Testing /reserveRights\n\n");
         mockMvc.perform(get("/reserveRights?appID=AB-2&imageID=IB-3&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("elements.*.licenseRight.licenseModelId", hasItem(is("MB-5"))));
+                .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
+                .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));
 
         System.out.println("Integration Testing /releaseRights\n\n");
-        mockMvc.perform(get("/reserveRights?appID=AB-2&imageID=IB-3&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/releaseRights?appID=AB-2&imageID=IB-3&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("elements.*.licenseRight.licenseModelId", hasItem(is("MB-5"))));
+                .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
+                .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));
         
+    }
+
+    @Test
+    public void testCheckRightsAvailable() throws Exception {
+        System.out.println("\n\nIntegration Testing /checkRightsAvailable\n\n");
+        mockMvc.perform(get("/checkRights?appID=AB-2&imageID=IB-3&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
+                .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));        
+    }
+
+    @Test
+    public void testCheckRightsNotAvailable() throws Exception {
+        System.out.println("\n\nIntegration Testing /checkRightsAvailable\n\n");
+        mockMvc.perform(get("/checkRights?appID=AB-2&imageID=IB-3&vCPUs=160&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(StatusMessage.RIGHTS_NOT_AVAILABLE) );        
+    }
+
+    @Test
+    public void testCheckRightsNoImage() throws Exception {
+        System.out.println("\n\nIntegration Testing /checkRightsNoImage\n\n");
+        mockMvc.perform(get("/checkRights?appID=AB-2&imageID=IB-3X&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(StatusMessage.NO_IMAGE) );        
+//                .andExpect(jsonPath("message").value("No image found for ImageID: IB-3X"));        
+    }
+
+    @Test
+    public void testCheckRightsNoManifest() throws Exception {
+        System.out.println("\n\nIntegration Testing /checkRightsNoManifest\n\n");
+        mockMvc.perform(get("/checkRights?appID=AB-2&imageID=IB-4&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(StatusMessage.NO_MANIFEST) );        
+//                .andExpect(jsonPath("message").value("No image found for ImageID: IB-3X"));        
     }
 
     

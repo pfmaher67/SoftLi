@@ -72,6 +72,17 @@ public class SoftLiController {
                 Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
     }
 
+    @RequestMapping("/checkRights")
+    @ResponseBody
+    public StatusMessage check(@RequestParam(value = "appID", defaultValue = "0") String appID,
+            @RequestParam(value = "imageID") String imageID,
+            @RequestParam(value = "vCPUs") String vCPUs,
+            @RequestParam(value = "ram") String ram,
+            @RequestParam(value = "instances") String instances) {
+        return lrm.checkRights(appID, imageID,
+                Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
+    }
+
 //    @RequestMapping("/createRights")
 //    public StatusMessage create(@RequestParam(value = "appID", defaultValue = "0") String appID,
 //            @RequestParam(value = "swReleaseID", defaultValue = "0") String swReleaseID,

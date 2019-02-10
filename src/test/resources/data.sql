@@ -1,9 +1,3 @@
-insert into LicenseRight(id, appId, licenseModelId, qtyOwned, qtyReserved) values
- ('AB-1-MB-1', 'AB-1', 'MB-1', 32, 0)
- ,('AB-2-MB-1', 'AB-2', 'MB-1', 16, 0)
- ,('AB-2-MB-5', 'AB-2', 'MB-5', 64, 0)
- ,('AB-3-MB-3', 'AB-3', 'MB-3', 3, 0);
- 
 
 insert into LicenseModel(id, name, licenseMetricId, softwareCategoryId) values
 ('MB-1', 'WAS ND', 0, 0)
@@ -12,6 +6,12 @@ insert into LicenseModel(id, name, licenseMetricId, softwareCategoryId) values
 ,('MB-4', 'Qualys', 2, 1)
 ,('MB-5', 'Kafka', 0, 0);
 
+insert into LicenseRight(id, appId, licenseModelId, qtyOwned, qtyReserved) values
+ ('AB-1-MB-1', 'AB-1', 'MB-1', 32, 0)
+ ,('AB-2-MB-1', 'AB-2', 'MB-1', 16, 0)
+ ,('AB-2-MB-5', 'AB-2', 'MB-5', 64, 0)
+ ,('AB-3-MB-3', 'AB-3', 'MB-3', 3, 0);
+ 
 insert into SoftwareRelease(id, name, version, licenseModelId) values
 ('RB-1', 'WAS ND exe', '8.1.1.13', 'MB-1')
 ,('RB-2', 'WAS ND exe2', '8.1.1.14', 'MB-1')
@@ -24,7 +24,8 @@ insert into SoftwareRelease(id, name, version, licenseModelId) values
 insert into Image(id, platform) values
 ('IB-1', 'AWS')
 ,('IB-2', 'AWS')
-,('IB-3', 'AWS');
+,('IB-3', 'AWS')
+,('IB-4', 'AWS');
 
 
 insert into manifest(imageId, swReleaseId) values
