@@ -95,6 +95,13 @@ public class SoftLiControllerIT {
     }
 
     @Test
+    public void testCheckRightsAvailable2() throws Exception {
+        System.out.println("\n\nIntegration Testing /checkRightsAvailable2\n\n");
+        mockMvc.perform(get("/checkRights2?appID=AB-2&imageID=IB-3&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     public void testCheckRightsNotAvailable() throws Exception {
         System.out.println("\n\nIntegration Testing /checkRightsAvailable\n\n");
         mockMvc.perform(get("/checkRights?appID=AB-2&imageID=IB-3&vCPUs=160&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
