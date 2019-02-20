@@ -20,21 +20,27 @@ import java.util.List;
 import com.gnoxy.SoftLi.repository.ImageRepository;
 import com.gnoxy.SoftLi.repository.LicenseRightRepository;
 import java.util.Collection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
+@Service
 public class LicenseRightsManager {
 
-    private final ImageRepository imageRepository;
-    private final LicenseRightRepository licenseRightRepository;
+    @Autowired
+    private ImageRepository imageRepository;
+    
+    @Autowired
+    private LicenseRightRepository licenseRightRepository;
 
-    public LicenseRightsManager(ImageRepository imageRepository,
-            LicenseRightRepository licenseRightRepository) {
-        this.imageRepository = imageRepository;
-        this.licenseRightRepository = licenseRightRepository;
-    }
+//    public LicenseRightsManager(ImageRepository imageRepository,
+//            LicenseRightRepository licenseRightRepository) {
+//        this.imageRepository = imageRepository;
+//        this.licenseRightRepository = licenseRightRepository;
+//    }
 
     public StatusMessage reserveRights(String appID, String imageID,
             long vCPU, long ram, long instances) {
@@ -98,9 +104,12 @@ public class LicenseRightsManager {
         String rKey;
         long quantity;
         List<SoftwareRelease> swReleases;
+System.out.println("\n\n\n Check rights 1 \n\n\n");
 
         if (imageRepository.existsById(imageID)) {
+System.out.println("\n\n\n Check rights 2 \n\n\n");
             image = imageRepository.getOne(imageID);
+System.out.println("\n\n\n Check rights 3 \n\n\n");
             swReleases = image.getSoftwareReleases();
         } else {
             statusMessage.setMessage("No image found for ImageID: " + imageID); //TO DO: Test this condition
@@ -162,6 +171,7 @@ public class LicenseRightsManager {
             statusMessage.setMessage("No manifest found for ImageID: " + imageID);
             statusMessage.setStatus(StatusMessage.NO_MANIFEST);
         }
+
         return statusMessage;
     }
 

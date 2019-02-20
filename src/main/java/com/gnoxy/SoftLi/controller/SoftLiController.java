@@ -49,7 +49,9 @@ public class SoftLiController {
     private String appName;
     @Value("${am.database}")
     private String db;
-    LicenseRightsManager lrm;
+    
+    @Autowired
+    private LicenseRightsManager lrm;
 
     @Autowired
     private LicenseRightRepository licenseRightRepository;
@@ -94,15 +96,15 @@ public class SoftLiController {
             @RequestParam(value = "ram") String ram,
             @RequestParam(value = "instances") String instances) {
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        try {
-            SoftLiRequest softLiRequest = new SoftLiRequest(appID, imageID, vCPUs, ram, instances);
-            String jsonRequest = mapper.writeValueAsString(softLiRequest);
-            jmsTemplate.convertAndSend("SoftLi.checkRights.inbound", jsonRequest);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(SoftLiController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+//        try {
+//            SoftLiRequest softLiRequest = new SoftLiRequest(appID, imageID, vCPUs, ram, instances);
+//            String jsonRequest = mapper.writeValueAsString(softLiRequest);
+//            jmsTemplate.convertAndSend("SoftLi.checkRights.inbound", jsonRequest);
+//        } catch (JsonProcessingException ex) {
+//            Logger.getLogger(SoftLiController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         return lrm.checkRights(appID, imageID,
                 Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
     }
@@ -114,7 +116,6 @@ public class SoftLiController {
             @RequestParam(value = "vCPUs") String vCPUs,
             @RequestParam(value = "ram") String ram,
             @RequestParam(value = "instances") String instances) {
-
         StatusMessage s = null;
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -149,7 +150,8 @@ public class SoftLiController {
 
     @PostConstruct
     public void init() {
-        lrm = new LicenseRightsManager(imageRepository, licenseRightRepository);
+//        lrm = new LicenseRightsManager(imageRepository, licenseRightRepository);
+//        lrm = new LicenseRightsManager();
 
         System.out.println("Running application: " + appName);
         System.out.println("Using Repository: " + db);
