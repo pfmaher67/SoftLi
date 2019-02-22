@@ -17,18 +17,61 @@
 
 package com.gnoxy.SoftLi.am;
 
-import com.gnoxy.SoftLi.utils.ConstType;
-
 /**
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
-public class SoftwareCategory extends ConstType {
+public class SoftwareCategory {
 
-    protected SoftwareCategory (int value, String desc) {
-        super (value, desc);
+    public static final int APPLICATION = 0;
+    public static final int INFRASTRUCTURE = 1;
+    
+    private int value;
+    private String desc;
+
+    public SoftwareCategory() {
     }    
-
-    public static final SoftwareCategory APPLICATION = new SoftwareCategory(0, "Application");
-    public static final SoftwareCategory INFRASTRUCTURE = new SoftwareCategory(1, "Infrastructure");
+    
+    public SoftwareCategory(int category) {
+        value = category;
+            switch (value) {
+                case 0:
+                    desc = "Application";
+                    break;
+                case 1:
+                    desc = "Infrastructure";
+                    break;
+                default:
+                    desc = "Invalid Category";
+                    break;
+            }        
+    }
+    
+    public int getValue() {
+        return value;
+    }
+    
+    public void setValue(int category) {
+        value = category;
+            switch (value) {
+                case 0:
+                    desc = "Application";
+                    break;
+                case 1:
+                    desc = "Infrastructure";
+                    break;
+                default:
+                    desc = "Invalid Category";
+                    break;
+            }        
+    }    
+    
+    public String getDescription() {
+        return desc;
+    }
+    
+    public void setDescription(String description) {
+        // only exists for the Json setter
+    }
+            
 }

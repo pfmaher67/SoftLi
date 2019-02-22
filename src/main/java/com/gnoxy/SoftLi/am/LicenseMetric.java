@@ -16,22 +16,69 @@
 
 
 package com.gnoxy.SoftLi.am;
-
-import com.gnoxy.SoftLi.utils.ConstType;
-
 /**
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
 
-public class LicenseMetric extends ConstType {
+public class LicenseMetric {
     
-    protected LicenseMetric (int value, String desc) {
-        super (value, desc);
+    public static final int VCPU = 0;
+    public static final int RAM = 1;
+    public static final int INSTANCE = 1;
+    
+    private int value;
+    private String desc;
+    
+    public LicenseMetric() {
     }
     
-    public static final LicenseMetric VCPU = new LicenseMetric(0, "vCPU");
-    public static final LicenseMetric RAM = new LicenseMetric(1, "RAM");
-    public static final LicenseMetric INSTANCE = new LicenseMetric(2, "Instance");
+    public LicenseMetric(int metric) {
+        value = metric;
+            switch (value) {
+                case 0:
+                    desc = "vCPU";
+                    break;
+                case 1:
+                    desc = "RAM";
+                    break;
+                case 2:
+                    desc = "Instance";
+                    break;
+                default:
+                    desc = "Invalid Metric";
+                    break;
+            }        
+    }
     
+    public int getValue() {
+        return value;
+    }
+    
+    public void setValue(int metric) {
+        value = metric;
+            switch (value) {
+                case 0:
+                    desc = "vCPU";
+                    break;
+                case 1:
+                    desc = "RAM";
+                    break;
+                case 2:
+                    desc = "Instance";
+                    break;
+                default:
+                    desc = "Invalid Metric";
+                    break;
+            }          
+    }
+    
+    public String getDescription() {
+        return desc;
+    }
+        
+    public void setDescription(String description) {
+        // Exists for the JsonToObject call
+    }
+        
 }

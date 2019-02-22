@@ -36,12 +36,6 @@ public class LicenseRightsManager {
     @Autowired
     private LicenseRightRepository licenseRightRepository;
 
-//    public LicenseRightsManager(ImageRepository imageRepository,
-//            LicenseRightRepository licenseRightRepository) {
-//        this.imageRepository = imageRepository;
-//        this.licenseRightRepository = licenseRightRepository;
-//    }
-
     public StatusMessage reserveRights(String appID, String imageID,
             long vCPU, long ram, long instances) {
         return manageRights(appID, imageID, vCPU, ram, instances, RightsAction.Reserve);
@@ -68,11 +62,11 @@ public class LicenseRightsManager {
             right = element.getLicenseRight();
             if (right != null) {
                 LicenseMetric metric = right.getLicenseModel().getLicenseMetric();
-                if (metric.equals(LicenseMetric.INSTANCE)) {
+                if (metric.getValue() == LicenseMetric.INSTANCE) {
                     quantity = instances;
-                } else if (metric.equals(LicenseMetric.RAM)) {
+                } else if (metric.getValue() == LicenseMetric.RAM) {
                     quantity = ram;
-                } else if (metric.equals(LicenseMetric.VCPU)) {
+                } else if (metric.getValue() == LicenseMetric.VCPU) {
                     quantity = vCPU;
                 } else {
                     quantity = -1;   // TODO: Handle this case
@@ -104,12 +98,9 @@ public class LicenseRightsManager {
         String rKey;
         long quantity;
         List<SoftwareRelease> swReleases;
-System.out.println("\n\n\n Check rights 1 \n\n\n");
 
         if (imageRepository.existsById(imageID)) {
-System.out.println("\n\n\n Check rights 2 \n\n\n");
             image = imageRepository.getOne(imageID);
-System.out.println("\n\n\n Check rights 3 \n\n\n");
             swReleases = image.getSoftwareReleases();
         } else {
             statusMessage.setMessage("No image found for ImageID: " + imageID); //TO DO: Test this condition
@@ -129,18 +120,18 @@ System.out.println("\n\n\n Check rights 3 \n\n\n");
 
             for (SoftwareRelease swRelease : swReleases) {
                 // Check each software title on the image, but only check rights for Application software
-                if (swRelease.getLicenseModel().getSoftwareCategory().equals(SoftwareCategory.INFRASTRUCTURE)) {
+                if (swRelease.getLicenseModel().getSoftwareCategory().getValue() == SoftwareCategory.INFRASTRUCTURE) {
                     statusMessage.setElement(new StatusMessageElement("Non-application software: "
                             + swRelease.toString(), null));
                 } else {
                     rKey = appID + "-" + swRelease.getLicenseModel().getId();
                     if (appRights.containsKey(rKey)) {
                         LicenseRight lr = appRights.get(rKey);
-                        if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.INSTANCE)) {
+                        if (swRelease.getLicenseModel().getLicenseMetric().getValue() == LicenseMetric.INSTANCE) {
                             quantity = instances;
-                        } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.RAM)) {
+                        } else if (swRelease.getLicenseModel().getLicenseMetric().getValue() == LicenseMetric.RAM) {
                             quantity = ram;
-                        } else if (swRelease.getLicenseModel().getLicenseMetric().equals(LicenseMetric.VCPU)) {
+                        } else if (swRelease.getLicenseModel().getLicenseMetric().getValue() == LicenseMetric.VCPU) {
                             quantity = vCPU;
                         } else {
                             quantity = -1;   // TODO: Handle this case

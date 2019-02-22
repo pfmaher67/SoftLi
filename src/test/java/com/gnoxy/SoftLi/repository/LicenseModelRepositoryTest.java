@@ -44,7 +44,9 @@ public class LicenseModelRepositoryTest {
     @Test
     public void testWriteAndRead() {
         System.out.println("\n\nLicenseModelRepositoryTest: testWriteandRead()\n\n");
-        LicenseModel licenseModel = new LicenseModel("TM-1", LicenseMetric.VCPU, SoftwareCategory.APPLICATION );
+        LicenseModel licenseModel = new LicenseModel("TM-1", 
+                new LicenseMetric(LicenseMetric.VCPU), 
+                new SoftwareCategory(SoftwareCategory.APPLICATION) );
         this.entityManager.persist(licenseModel);
         
         LicenseModel foundModel = licenseModelRepository.getOne(licenseModel.getId());

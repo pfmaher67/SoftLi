@@ -47,6 +47,7 @@ public class LicenseModel {
     @Transient
     private SoftwareCategory category;
 
+    
     protected LicenseModel() {
 
     }
@@ -61,6 +62,7 @@ public class LicenseModel {
 //        this.id = id;
 //        this.softwareCategoryId = softwareCategoryId;
 //    }
+    
     public LicenseModel(String id, LicenseMetric metric, SoftwareCategory category) {
         this.id = id;
         this.metric = metric;
@@ -71,6 +73,10 @@ public class LicenseModel {
 
     public String getId() {
         return id;
+    }
+    
+    public void setId(String id) {
+        this.id = id;
     }
     
     public String getName() {
@@ -87,33 +93,41 @@ public class LicenseModel {
 //            metric = (LicenseMetric) LicenseMetric.getByValue(LicenseMetric.class, licenseMetricId);
             switch (licenseMetricId) {
                 case 0:
-                    metric = LicenseMetric.VCPU;
+                    metric = new LicenseMetric(LicenseMetric.VCPU);
                     break;
                 case 1:
-                    metric = LicenseMetric.RAM;
+                    metric = new LicenseMetric(LicenseMetric.RAM);
                     break;
                 case 2:
-                    metric = LicenseMetric.INSTANCE;
+                    metric = new LicenseMetric(LicenseMetric.INSTANCE);
                     break;
             }
         }
         return metric;
     }
+    
+    public void setLicenseMetric(LicenseMetric metric) {
+        this.metric = metric;
+        licenseMetricId = metric.getValue();
+    }
 
     public SoftwareCategory getSoftwareCategory() {
         if (category == null) {
-//            This stopped working when I added the relationship with the SoftwareRelease Entity; changed to switch 
-//            category = (SoftwareCategory) SoftwareCategory.getByValue(SoftwareCategory.class, softwareCategoryId);
             switch (softwareCategoryId) {
                 case 0:
-                    category = SoftwareCategory.APPLICATION;
+                    category = new SoftwareCategory(SoftwareCategory.APPLICATION);
                     break;
                 case 1:
-                    category = SoftwareCategory.INFRASTRUCTURE;
+                    category = new SoftwareCategory(SoftwareCategory.INFRASTRUCTURE);
                     break;
             }
         }
         return category;
+    }
+    
+    public void setSoftwareCategory(SoftwareCategory category) {
+        this.category = category;
+        softwareCategoryId = category.getValue();
     }
 
     @Override

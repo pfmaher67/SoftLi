@@ -117,17 +117,18 @@ public class SoftLiController {
             @RequestParam(value = "ram") String ram,
             @RequestParam(value = "instances") String instances) {
         StatusMessage s = null;
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        ObjectMapper objectToJsonMapper = new ObjectMapper();
+        objectToJsonMapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
             SoftLiRequest softLiRequest = new SoftLiRequest(appID, imageID, vCPUs, ram, instances);
             
-            String jsonRequest = mapper.writeValueAsString(softLiRequest);
+            String jsonRequest = objectToJsonMapper.writeValueAsString(softLiRequest);
             Object o = jmsMessagingTemplate.convertSendAndReceive("SoftLi.checkRights2.inbound", jsonRequest, String.class);
             if (o != null) {
                 System.out.println("Object: " + o.toString());
                 try {
-                    s = mapper.readValue(o.toString(), StatusMessage.class);
+                    ObjectMapper jsonToObjectMaper = new ObjectMapper();
+                    s = jsonToObjectMaper.readValue(o.toString(), StatusMessage.class);
                 } catch (IOException ex) {
                     Logger.getLogger(SoftLiController.class.getName()).log(Level.SEVERE, null, ex);
                 }

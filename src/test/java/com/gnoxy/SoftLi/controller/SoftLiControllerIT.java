@@ -98,7 +98,9 @@ public class SoftLiControllerIT {
     public void testCheckRightsAvailable2() throws Exception {
         System.out.println("\n\nIntegration Testing /checkRightsAvailable2\n\n");
         mockMvc.perform(get("/checkRights2?appID=AB-2&imageID=IB-3&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
+                .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));        
     }
 
     @Test

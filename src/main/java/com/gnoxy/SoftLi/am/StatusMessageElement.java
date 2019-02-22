@@ -21,7 +21,10 @@ package com.gnoxy.SoftLi.am;
  */
 public class StatusMessageElement {
     private String message;
-    private final LicenseRight right;
+    private LicenseRight right;
+    
+    public StatusMessageElement() {
+    }
     
     public StatusMessageElement(String message, LicenseRight right) {
         this.message = message;
@@ -38,5 +41,9 @@ public class StatusMessageElement {
     
     public LicenseRight getLicenseRight() {
         return right;
+    }
+    
+    public void setLicenseRight(LicenseRight right) {
+        this.right = right;
     }
 }

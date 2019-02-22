@@ -46,7 +46,8 @@ public class LicenseRightRepositoryTest {
     public void testWriteAndRead() {
         System.out.println("\n\nLicenseRightRepositoryTest: testWriteandRead()\n\n");
         LicenseRight licenseRight = new LicenseRight("A-4", 
-                new LicenseModel("TM-4", LicenseMetric.VCPU, SoftwareCategory.APPLICATION), 24 );
+                new LicenseModel("TM-4", new LicenseMetric(LicenseMetric.VCPU), 
+                        new SoftwareCategory(SoftwareCategory.APPLICATION)) , 24 );
         this.entityManager.persist(licenseRight);
         
         LicenseRight foundRight = licenseRightRepository.getOne(licenseRight.getId());

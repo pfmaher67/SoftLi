@@ -34,17 +34,19 @@ public class StatusMessage {
     private String message;
     private List<StatusMessageElement> elements;
 
+
     public StatusMessage() {
         status = NO_STATUS;
         message = "";
         elements = new ArrayList<>();
     }
-
+    
     public StatusMessage(int status, String message) {
         this.status = status;
         this.message = message;
         elements = new ArrayList<>();
     }
+
 
     public StatusMessage(int status, String message, StatusMessageElement element) {
         this.status = status;
