@@ -16,9 +16,6 @@
 package com.gnoxy.SoftLi.controller;
 
 import com.gnoxy.SoftLi.am.LicenseRight;
-import com.gnoxy.SoftLi.am.StatusMessage;
-import com.gnoxy.SoftLi.am.LicenseRightsManager;
-import com.gnoxy.SoftLi.repository.ImageRepository;
 import com.gnoxy.SoftLi.repository.LicenseRightRepository;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -27,10 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -49,59 +42,6 @@ public class SoftLiController {
 
     @Autowired
     private LicenseRightRepository licenseRightRepository;
-
-//    @RequestMapping("/reserveRights")
-//    @ResponseBody
-//    public StatusMessage reserve(@RequestParam(value = "appID", defaultValue = "0") String appID,
-//            @RequestParam(value = "imageID") String imageID,
-//            @RequestParam(value = "vCPUs") String vCPUs,
-//            @RequestParam(value = "ram") String ram,
-//            @RequestParam(value = "instances") String instances) {
-//
-//        return lrm.reserveRights(appID, imageID,
-//                Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
-//    }
-//
-//    @RequestMapping("/releaseRights")
-//    @ResponseBody
-//    public StatusMessage release(@RequestParam(value = "appID", defaultValue = "0") String appID,
-//            @RequestParam(value = "imageID") String imageID,
-//            @RequestParam(value = "vCPUs") String vCPUs,
-//            @RequestParam(value = "ram") String ram,
-//            @RequestParam(value = "instances") String instances) {
-//        return lrm.releaseRights(appID, imageID,
-//                Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
-//    }
-//
-//    @RequestMapping("/checkRights")
-//    @ResponseBody
-//    public StatusMessage check(@RequestParam(value = "appID", defaultValue = "0") String appID,
-//            @RequestParam(value = "imageID") String imageID,
-//            @RequestParam(value = "vCPUs") String vCPUs,
-//            @RequestParam(value = "ram") String ram,
-//            @RequestParam(value = "instances") String instances) {
-//        return lrm.checkRights(appID, imageID,
-//                Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
-//    }
-
-//    @RequestMapping("/createRights")
-//    public StatusMessage create(@RequestParam(value = "appID", defaultValue = "0") String appID,
-//            @RequestParam(value = "swReleaseID", defaultValue = "0") String swReleaseID,
-//            @RequestParam(value = "quantity", defaultValue = "0") String quantity) {
-//        return licenseRights.addRight(appID, swReleaseID, Long.parseLong(quantity));
-//    }
-//    @RequestMapping("/addRight")
-//    public StatusMessage add(@RequestParam(value = "appID", defaultValue = "0") String appID,
-//            @RequestParam(value = "swReleaseID", defaultValue = "0") String swReleaseID,
-//            @RequestParam(value = "quantity", defaultValue = "0") String quantity) {
-//        LicenseRight l = new LicenseRight(appID, swReleaseID, Long.parseLong(quantity));
-//        licenseRightRepository.save(l);
-//        return licenseRights.addRight(appID, swReleaseID, Long.parseLong(quantity));
-//    }
-//    @RequestMapping("/listRights")
-//    public List<LicenseRight> list() {
-//        return licenseRightRepository.findAll();
-//    }
 
     @GetMapping("/listRights2")
     public String list2(Model model) {

@@ -95,7 +95,6 @@ public class SoftLiRestControllerIT {
     @Test
     public void testReserveandReleasesRightsStdPost() throws Exception {
         String jsonRequest = null;
-        System.out.println("\n\nIntegration Testing /reserveRightsStdPost\n\n");
         SoftLiRequest softLiRequest = new SoftLiRequest("AB-2", "IB-3", "16", "256", "1");
         ObjectMapper objectToJsonMapper = new ObjectMapper();
         objectToJsonMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -105,14 +104,16 @@ public class SoftLiRestControllerIT {
             Logger.getLogger(SoftLiRestController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-//        mockMvc.perform(post("/reserveRightsP/std").content(jsonRequest)).andDo(print())
-        mockMvc.perform(post("/reserveRightsP/std").content(jsonRequest).contentType(MediaType.APPLICATION_JSON))
+        System.out.println("\n\nIntegration Testing /reserveRightsStdPost\n\n");
+        mockMvc.perform(post("/reserveRights/std").content(jsonRequest).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
                 .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));
 
         System.out.println("Integration Testing /releaseRightsStdPost\n\n");
-        mockMvc.perform(post("/releaseRightsP/std").content(jsonRequest).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/releaseRights/std").content(jsonRequest).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
                 .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));

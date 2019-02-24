@@ -15,16 +15,12 @@
  */
 package com.gnoxy.SoftLi.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gnoxy.SoftLi.am.LicenseRight;
 import com.gnoxy.SoftLi.am.StatusMessage;
 import com.gnoxy.SoftLi.am.LicenseRightsManager;
 import com.gnoxy.SoftLi.repository.LicenseRightRepository;
 import com.gnoxy.SoftLi.data.SoftLiRequest;
-import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,38 +61,6 @@ public class SoftLiRestController {
                 Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
     }
 
-    @PostMapping("/reserveRightsP/std")
-    @ResponseBody
-    public StatusMessage pReserve(@RequestBody String softLiRequestJson) {
-        StatusMessage m = new StatusMessage(StatusMessage.NO_STATUS, "Something went wrong");
-        System.out.println("reserveRightsP reqeust body: " + softLiRequestJson);
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            SoftLiRequest softLiRequest = mapper.readValue(softLiRequestJson, SoftLiRequest.class);
-            if (softLiRequest != null) {
-                System.out.println("Got SoftLiRequest: " + softLiRequest.toString());
-                if (lrm != null) {
-                    m = lrm.reserveRights(softLiRequest.getAppId(), softLiRequest.getImageID(),
-                            Long.parseLong(softLiRequest.getvCPUs()),
-                            Long.parseLong(softLiRequest.getRam()),
-                            Integer.parseInt(softLiRequest.getInstances()));
-                } else {
-                    System.out.println("The LicenseRightsMapper is null");
-                }
-            } else {
-                System.out.println("SoftLiRequest is null");
-            }
-            if (m != null) {
-                System.out.println("Status Message: " + m.toString());
-            } else {
-                System.out.println("Status is null");
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(SoftLiRestController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return m;
-    }
-
     @RequestMapping("/releaseRights")
     @ResponseBody
     public StatusMessage release(@RequestParam(value = "appID", defaultValue = "0") String appID,
@@ -107,38 +71,43 @@ public class SoftLiRestController {
         return lrm.releaseRights(appID, imageID,
                 Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
     }
-
-    @PostMapping("/releaseRightsP/std")
+ 
+    @PostMapping("/reserveRights/std")
     @ResponseBody
-    public StatusMessage pRelease(@RequestBody String softLiRequestJson) {
+    public StatusMessage pReserve2(@RequestBody SoftLiRequest softLiRequest) {
         StatusMessage m = new StatusMessage(StatusMessage.NO_STATUS, "Something went wrong");
-        System.out.println("releaseRightsP reqeust body: " + softLiRequestJson);
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            SoftLiRequest softLiRequest = mapper.readValue(softLiRequestJson, SoftLiRequest.class);
-            if (softLiRequest != null) {
-                System.out.println("Got SoftLiRequest: " + softLiRequest.toString());
-                if (lrm != null) {
-                    m = lrm.releaseRights(softLiRequest.getAppId(), softLiRequest.getImageID(),
-                            Long.parseLong(softLiRequest.getvCPUs()),
-                            Long.parseLong(softLiRequest.getRam()),
-                            Integer.parseInt(softLiRequest.getInstances()));
-                } else {
-                    System.out.println("The LicenseRightsMapper is null");
-                }
-            } else {
-                System.out.println("SoftLiRequest is null");
-            }
-            if (m != null) {
-                System.out.println("Status Message: " + m.toString());
-            } else {
-                System.out.println("Status is null");
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(SoftLiRestController.class.getName()).log(Level.SEVERE, null, ex);
+//        System.out.println("reserveRightsP/std reqeust body: " + softLiRequest.toString());
+        if (lrm != null) {
+            m = lrm.reserveRights(softLiRequest.getAppId(), softLiRequest.getImageID(),
+                    Long.parseLong(softLiRequest.getvCPUs()),
+                    Long.parseLong(softLiRequest.getRam()),
+                    Integer.parseInt(softLiRequest.getInstances()));
+        } else {
+            System.out.println("The LicenseRightsMapper is null");
         }
+        if (m == null) {
+            System.out.println("Status is null");
+        } 
         return m;
     }
+
+    @PostMapping("/releaseRights/std")
+    @ResponseBody
+    public StatusMessage pRelease(@RequestBody SoftLiRequest softLiRequest) {
+        StatusMessage m = new StatusMessage(StatusMessage.NO_STATUS, "Something went wrong");
+        if (lrm != null) {
+            m = lrm.releaseRights(softLiRequest.getAppId(), softLiRequest.getImageID(),
+                    Long.parseLong(softLiRequest.getvCPUs()),
+                    Long.parseLong(softLiRequest.getRam()),
+                    Integer.parseInt(softLiRequest.getInstances()));
+        } else {
+            System.out.println("The LicenseRightsMapper is null");
+        }
+        if (m == null) {
+            System.out.println("Status is null");
+        } 
+        return m;
+    }    
 
     @RequestMapping("/checkRights")
     @ResponseBody
@@ -151,20 +120,6 @@ public class SoftLiRestController {
                 Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
     }
 
-//    @RequestMapping("/createRights")
-//    public StatusMessage create(@RequestParam(value = "appID", defaultValue = "0") String appID,
-//            @RequestParam(value = "swReleaseID", defaultValue = "0") String swReleaseID,
-//            @RequestParam(value = "quantity", defaultValue = "0") String quantity) {
-//        return licenseRights.addRight(appID, swReleaseID, Long.parseLong(quantity));
-//    }
-//    @RequestMapping("/addRight")
-//    public StatusMessage add(@RequestParam(value = "appID", defaultValue = "0") String appID,
-//            @RequestParam(value = "swReleaseID", defaultValue = "0") String swReleaseID,
-//            @RequestParam(value = "quantity", defaultValue = "0") String quantity) {
-//        LicenseRight l = new LicenseRight(appID, swReleaseID, Long.parseLong(quantity));
-//        licenseRightRepository.save(l);
-//        return licenseRights.addRight(appID, swReleaseID, Long.parseLong(quantity));
-//    }
     @RequestMapping("/listRights")
     public List<LicenseRight> list() {
         return licenseRightRepository.findAll();
