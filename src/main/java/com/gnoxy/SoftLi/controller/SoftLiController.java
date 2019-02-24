@@ -24,6 +24,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,55 +36,53 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
-@RestController
+@Controller
 public class SoftLiController {
 
     @Value("${spring.application.name}")
     private String appName;
     @Value("${am.database}")
     private String db;
-    LicenseRightsManager lrm;
-    
+
+//    @Autowired
+//    LicenseRightsManager lrm;
+
     @Autowired
     private LicenseRightRepository licenseRightRepository;
-    
-    @Autowired
-    private ImageRepository imageRepository;
 
-    
-    @RequestMapping("/reserveRights")
-    @ResponseBody
-    public StatusMessage reserve(@RequestParam(value = "appID", defaultValue = "0") String appID,
-            @RequestParam(value = "imageID") String imageID,
-            @RequestParam(value = "vCPUs") String vCPUs,
-            @RequestParam(value = "ram") String ram,
-            @RequestParam(value = "instances") String instances) {
-
-        return lrm.reserveRights(appID, imageID,
-                Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
-    }
-
-    @RequestMapping("/releaseRights")
-    @ResponseBody
-    public StatusMessage release(@RequestParam(value = "appID", defaultValue = "0") String appID,
-            @RequestParam(value = "imageID") String imageID,
-            @RequestParam(value = "vCPUs") String vCPUs,
-            @RequestParam(value = "ram") String ram,
-            @RequestParam(value = "instances") String instances) {
-        return lrm.releaseRights(appID, imageID,
-                Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
-    }
-
-    @RequestMapping("/checkRights")
-    @ResponseBody
-    public StatusMessage check(@RequestParam(value = "appID", defaultValue = "0") String appID,
-            @RequestParam(value = "imageID") String imageID,
-            @RequestParam(value = "vCPUs") String vCPUs,
-            @RequestParam(value = "ram") String ram,
-            @RequestParam(value = "instances") String instances) {
-        return lrm.checkRights(appID, imageID,
-                Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
-    }
+//    @RequestMapping("/reserveRights")
+//    @ResponseBody
+//    public StatusMessage reserve(@RequestParam(value = "appID", defaultValue = "0") String appID,
+//            @RequestParam(value = "imageID") String imageID,
+//            @RequestParam(value = "vCPUs") String vCPUs,
+//            @RequestParam(value = "ram") String ram,
+//            @RequestParam(value = "instances") String instances) {
+//
+//        return lrm.reserveRights(appID, imageID,
+//                Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
+//    }
+//
+//    @RequestMapping("/releaseRights")
+//    @ResponseBody
+//    public StatusMessage release(@RequestParam(value = "appID", defaultValue = "0") String appID,
+//            @RequestParam(value = "imageID") String imageID,
+//            @RequestParam(value = "vCPUs") String vCPUs,
+//            @RequestParam(value = "ram") String ram,
+//            @RequestParam(value = "instances") String instances) {
+//        return lrm.releaseRights(appID, imageID,
+//                Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
+//    }
+//
+//    @RequestMapping("/checkRights")
+//    @ResponseBody
+//    public StatusMessage check(@RequestParam(value = "appID", defaultValue = "0") String appID,
+//            @RequestParam(value = "imageID") String imageID,
+//            @RequestParam(value = "vCPUs") String vCPUs,
+//            @RequestParam(value = "ram") String ram,
+//            @RequestParam(value = "instances") String instances) {
+//        return lrm.checkRights(appID, imageID,
+//                Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
+//    }
 
 //    @RequestMapping("/createRights")
 //    public StatusMessage create(@RequestParam(value = "appID", defaultValue = "0") String appID,
@@ -89,7 +90,6 @@ public class SoftLiController {
 //            @RequestParam(value = "quantity", defaultValue = "0") String quantity) {
 //        return licenseRights.addRight(appID, swReleaseID, Long.parseLong(quantity));
 //    }
-
 //    @RequestMapping("/addRight")
 //    public StatusMessage add(@RequestParam(value = "appID", defaultValue = "0") String appID,
 //            @RequestParam(value = "swReleaseID", defaultValue = "0") String swReleaseID,
@@ -98,19 +98,26 @@ public class SoftLiController {
 //        licenseRightRepository.save(l);
 //        return licenseRights.addRight(appID, swReleaseID, Long.parseLong(quantity));
 //    }
+//    @RequestMapping("/listRights")
+//    public List<LicenseRight> list() {
+//        return licenseRightRepository.findAll();
+//    }
 
-    @RequestMapping("/listRights")
-    public List<LicenseRight> list() {
-        return licenseRightRepository.findAll();
+    @GetMapping("/listRights2")
+    public String list2(Model model) {
+        List<LicenseRight> rights = licenseRightRepository.findAll();
+        String rightsString = new String();
+        for (LicenseRight r : rights) {
+            rightsString = rightsString.concat(r.toString());
+        }
+        System.out.println("listRights2 Result: " + rightsString);
+        model.addAttribute("rightsString", rightsString);
+        return "results";
     }
 
     @PostConstruct
     public void init() {
-        lrm = new LicenseRightsManager(imageRepository, licenseRightRepository);
-//        , entityManager);
-        
-        System.out.println("Running application: " + appName);
-        System.out.println("Using Repository: " + db);
-                        
+        System.out.println("Running(2) application: " + appName);
+        System.out.println("Using(2) Repository: " + db);
     }
 }

@@ -17,9 +17,7 @@ package com.gnoxy.SoftLi.repository;
 
 import com.gnoxy.SoftLi.am.LicenseRight;
 import java.util.Collection;
-import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -29,23 +27,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository("LicenseRightRepository")
 public interface LicenseRightRepository extends JpaRepository<LicenseRight, String> {
-    
-//    @Query("select l from LicenseRight l")
-//    Collection<DBLicenseRight> findAllLicenseRights();
-//    
+      
     @Query("select l from LicenseRight l where l.appId = ?1")
     Collection<LicenseRight> findLicenseRightsByAppId(String appId);
-    
-//    @Query("select l from LicenseRight l where l.id = ?1")
-//    DBLicenseRight findLicenseRightById(String id);
-    
-//    @Modifying
-//    @Query("update LicenseRight l set l.qtyOwned = :qty where id = :id")
-//    int updateLicenseRightQtyOwned(@Param("id") String id, @Param("qty") int quantity);
-//    
-//    @Modifying
-//    @Query("update LicenseRight l set l.qtyReserved = :qty where id = :id")
-//    int updateLicenseRightQtyReserved(@Param("id") String id, @Param("qty") int quantity);
-    
     
 }

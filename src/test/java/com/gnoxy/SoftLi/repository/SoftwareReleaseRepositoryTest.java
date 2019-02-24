@@ -15,7 +15,6 @@
  */
 package com.gnoxy.SoftLi.repository;
 
-import com.gnoxy.SoftLi.am.Image;
 import com.gnoxy.SoftLi.am.LicenseModel;
 import com.gnoxy.SoftLi.am.SoftwareRelease;
 import static org.junit.Assert.assertNotNull;

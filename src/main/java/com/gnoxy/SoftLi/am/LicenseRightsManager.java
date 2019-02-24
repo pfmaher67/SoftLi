@@ -20,21 +20,21 @@ import java.util.List;
 import com.gnoxy.SoftLi.repository.ImageRepository;
 import com.gnoxy.SoftLi.repository.LicenseRightRepository;
 import java.util.Collection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
+@Service
 public class LicenseRightsManager {
 
-    private final ImageRepository imageRepository;
-    private final LicenseRightRepository licenseRightRepository;
-
-    public LicenseRightsManager(ImageRepository imageRepository,
-            LicenseRightRepository licenseRightRepository) {
-        this.imageRepository = imageRepository;
-        this.licenseRightRepository = licenseRightRepository;
-    }
+    @Autowired
+    private ImageRepository imageRepository;
+    
+    @Autowired
+    private LicenseRightRepository licenseRightRepository;
 
     public StatusMessage reserveRights(String appID, String imageID,
             long vCPU, long ram, long instances) {
