@@ -16,9 +16,6 @@ variable "INSTANCE_TYPE" {
     prd = "t2.small"
   }
 }
-variable "SSH_CIDR" {
-  default = "47.187.108.244/32"
-}
 
 variable "AWS_REGION" {
   default = "us-east-1"

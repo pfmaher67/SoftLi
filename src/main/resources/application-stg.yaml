@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: SoftLi
+  datasource:
+    url: 'jdbc:mysql://softli.cpec3obv2plb.us-east-1.rds.amazonaws.com:3306/SoftLi'
+    username: dbusoftli
+    password: dbusoftlipw
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming: 
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      
+am:
+  database: 'Stg - AWS MariaDB/MySQL'

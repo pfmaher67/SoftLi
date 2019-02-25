@@ -1,6 +1,6 @@
 { 
-  "appId" : "App-2", 
-  "imageID" : "Image-3", 
+  "appId" : "AD-2", 
+  "imageID" : "ID-3", 
   "vCPUs" : "16", 
   "ram" : "256", 
   "instances" : "1"

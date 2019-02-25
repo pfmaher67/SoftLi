@@ -30,7 +30,7 @@ resource "aws_instance" "SoftLi" {
   subnet_id = "${data.terraform_remote_state.baseref.subnet-main-public-1-id}"
 
   # the security group
-  vpc_security_group_ids = ["${data.terraform_remote_state.baseref.sg-ssh-http-id}"]
+  vpc_security_group_ids = ["${data.terraform_remote_state.baseref.sg-protected-id}"]
 
 #  provisioner "file" {
 #    source = "script.sh"
