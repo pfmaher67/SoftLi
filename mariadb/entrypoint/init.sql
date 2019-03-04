@@ -68,6 +68,36 @@ insert into SoftLi.Image(id, platform) values
 
 
 
+create table SoftLi.EC2InstanceType(
+ instanceType varchar(64),
+ vcpu int,
+ memory double,
+ PRIMARY KEY(instanceType)
+ );
+
+insert into SoftLi.EC2InstanceType(instanceType, vcpu, memory) values
+('t2.nano', 1, 0.5)
+,('t2.micro', 1, 1)
+,('t2.small', 1, 2)
+,('t2.medium', 1, 2)
+,('t2.large', 1, 8)
+,('t2.xlarge', 4, 16)
+,('t2.2xlarge', 8, 32)
+,('t3.nano', 2, 0.5)
+,('t3.micro', 2, 1)
+,('t3.small', 2, 2)
+,('t3.medium', 2, 2)
+,('t3.large', 2, 8)
+,('t3.xlarge', 4, 16)
+,('t3.2xlarge', 8, 32)
+,('m5.large', 2, 8)
+,('m5.xlarge', 4, 16)
+,('m5.2xlarge', 8, 32)
+,('m5.4xlarge', 16, 64)
+,('m5.12xlarge', 48, 192)
+,('m5.24xlarge', 96, 384);
+
+
 create table SoftLi.manifest(
  imageId varchar(64),
  swReleaseId varchar(64),

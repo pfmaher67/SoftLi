@@ -15,6 +15,8 @@
  */
 package com.gnoxy.SoftLi.am;
 
+import com.gnoxy.SoftLi.aws.EC2InstanceType;
+import com.gnoxy.SoftLi.repository.EC2InstanceTypeRepository;
 import java.util.HashMap;
 import java.util.List;
 import com.gnoxy.SoftLi.repository.ImageRepository;
@@ -35,6 +37,9 @@ public class LicenseRightsManager {
     
     @Autowired
     private LicenseRightRepository licenseRightRepository;
+    
+    @Autowired
+    private EC2InstanceTypeRepository ec2InstanceTypeRepository;
 
     public StatusMessage reserveRights(String appID, String imageID,
             long vCPU, long ram, long instances) {
@@ -164,6 +169,29 @@ public class LicenseRightsManager {
         }
         return statusMessage;
     }
+    
+    public StatusMessage reserveRightsAws(String appID, String imageID,
+            String instanceType, long instances) {
+        EC2InstanceType instance = ec2InstanceTypeRepository.getOne(instanceType);
+        long memory = Math.round(instance.getMemory());
+        return manageRights(appID, imageID, instance.getvCPUs() * instances, memory * instances, instances, RightsAction.Reserve);
+    }
+
+    public StatusMessage releaseRightsAws(String appID, String imageID,
+            String instanceType, long instances) {
+        EC2InstanceType instance = ec2InstanceTypeRepository.getOne(instanceType);
+        long memory = Math.round(instance.getMemory());
+        return manageRights(appID, imageID, instance.getvCPUs() * instances, memory * instances, instances, RightsAction.Release);
+    }
+    
+    public StatusMessage checkRightsAws(String appID, String imageID,
+            String instanceType, long instances) {
+        EC2InstanceType instance = ec2InstanceTypeRepository.getOne(instanceType);
+        long memory = Math.round(instance.getMemory());
+        return checkRights(appID, imageID, instance.getvCPUs() * instances, memory * instances, instances);
+    }
+
+    
 
     private enum RightsAction {
         Reserve,

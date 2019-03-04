@@ -19,23 +19,21 @@ package com.gnoxy.SoftLi.data;
  *
  * @author Patrick Maher<dev@gnoxy.com>
  */
-public class SoftLiRequest {
+public class SoftLiAwsRequest {
 
     private String appID;
     private String imageID;
-    private String vCPUs;
-    private String ram;
+    private String instanceType;
     private String instances;
 
-    public SoftLiRequest() {
+    public SoftLiAwsRequest() {
 
     }
 
-    public SoftLiRequest(String appId, String imageId, String vCPUs, String ram, String instances) {
+    public SoftLiAwsRequest(String appId, String imageId, String instanceType, String instances) {
         this.appID = appId;
         this.imageID = imageId;
-        this.vCPUs = vCPUs;
-        this.ram = ram;
+        this.instanceType = instanceType;
         this.instances = instances;
     }
 
@@ -55,20 +53,12 @@ public class SoftLiRequest {
         this.imageID = imageID;
     }
 
-    public String getvCPUs() {
-        return vCPUs;
+    public String getInstanceType() {
+        return instanceType;
     }
 
-    public void setvCPUs(String vCPUs) {
-        this.vCPUs = vCPUs;
-    }
-
-    public String getRam() {
-        return ram;
-    }
-
-    public void setRam(String ram) {
-        this.ram = ram;
+    public void setInstanceType(String instanceType) {
+        this.instanceType = instanceType;
     }
 
     public String getInstances() {
@@ -81,8 +71,8 @@ public class SoftLiRequest {
 
     @Override
     public String toString() {
-        return String.format("SoftLiRequest[appId=%s, imageId=%s, vCPUs=%s, ram=%s, instances=%s]",
-                appID, imageID, vCPUs, ram, instances);
+        return String.format("SoftLiRequest[appId=%s, imageId=%s, instanceType=%s, instances=%s]",
+                appID, imageID, instanceType, instances);
     }
 }
 

@@ -1,0 +1,6 @@
+{ 
+  "appId" : "App-2", 
+  "imageID" : "Image-3", 
+  "instanceType" : "t3.xlarge", 
+  "instances" : "2"
+}

@@ -19,7 +19,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.gnoxy.SoftLi.am.StatusMessage;
-import com.gnoxy.SoftLi.data.SoftLiRequest;
+import com.gnoxy.SoftLi.data.SoftLiAwsRequest;
+import com.gnoxy.SoftLi.data.SoftLiStdRequest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.hamcrest.Matchers.hasItem;
@@ -89,13 +90,13 @@ public class SoftLiRestControllerIT {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
                 .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));
-        
+
     }
-    
+
     @Test
     public void testReserveandReleasesRightsStdPost() throws Exception {
         String jsonRequest = null;
-        SoftLiRequest softLiRequest = new SoftLiRequest("AB-2", "IB-3", "16", "256", "1");
+        SoftLiStdRequest softLiRequest = new SoftLiStdRequest("AB-2", "IB-3", "16", "256", "1");
         ObjectMapper objectToJsonMapper = new ObjectMapper();
         objectToJsonMapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
@@ -103,59 +104,94 @@ public class SoftLiRestControllerIT {
         } catch (JsonProcessingException ex) {
             Logger.getLogger(SoftLiRestController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        System.out.println("\n\nIntegration Testing /reserveRightsStdPost\n\n");
+
+        System.out.println("\n\nIntegration Testing /reserveRights/std Post\n\n");
         mockMvc.perform(post("/reserveRights/std").content(jsonRequest).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
                 .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));
 
-        System.out.println("Integration Testing /releaseRightsStdPost\n\n");
+        System.out.println("Integration Testing /releaseRights/std Post\n\n");
         mockMvc.perform(post("/releaseRights/std").content(jsonRequest).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
                 .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));
-        
+
     }
 
     @Test
     public void testCheckRightsAvailable() throws Exception {
-        System.out.println("\n\nIntegration Testing /checkRightsAvailable\n\n");
+        System.out.println("\n\nIntegration Testing /checkRights Available\n\n");
         mockMvc.perform(get("/checkRights?appID=AB-2&imageID=IB-3&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
-                .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));        
+                .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));
     }
 
     @Test
     public void testCheckRightsNotAvailable() throws Exception {
-        System.out.println("\n\nIntegration Testing /checkRightsNotAvailable\n\n");
+        System.out.println("\n\nIntegration Testing /checkRights NotAvailable\n\n");
         mockMvc.perform(get("/checkRights?appID=AB-2&imageID=IB-3&vCPUs=160&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(StatusMessage.RIGHTS_NOT_AVAILABLE) );        
+                .andExpect(jsonPath("status").value(StatusMessage.RIGHTS_NOT_AVAILABLE));
     }
 
     @Test
     public void testCheckRightsNoImage() throws Exception {
-        System.out.println("\n\nIntegration Testing /checkRightsNoImage\n\n");
+        System.out.println("\n\nIntegration Testing /checkRights NoImage\n\n");
         mockMvc.perform(get("/checkRights?appID=AB-2&imageID=IB-3X&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(StatusMessage.NO_IMAGE) );        
+                .andExpect(jsonPath("status").value(StatusMessage.NO_IMAGE));
 //                .andExpect(jsonPath("message").value("No image found for ImageID: IB-3X"));        
     }
 
     @Test
     public void testCheckRightsNoManifest() throws Exception {
-        System.out.println("\n\nIntegration Testing /checkRightsNoManifest\n\n");
+        System.out.println("\n\nIntegration Testing /checkRights NoManifest\n\n");
         mockMvc.perform(get("/checkRights?appID=AB-2&imageID=IB-4&vCPUs=16&ram=256&instances=1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(StatusMessage.NO_MANIFEST) );        
+                .andExpect(jsonPath("status").value(StatusMessage.NO_MANIFEST));
 //                .andExpect(jsonPath("message").value("No image found for ImageID: IB-3X"));        
     }
 
-    
+    @Test
+    public void testCheckRightsAWS() throws Exception {
+        System.out.println("\n\nIntegration Testing /checkRightsAWS\n\n");
+        mockMvc.perform(get("/checkRightsAWS?appID=AB-2&imageID=IB-3&instanceType=t3.large&instances=1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
+                .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));
+    }
+
+    @Test
+    public void testReserveandReleasesRightsAwsPost() throws Exception {
+        String jsonRequest = null;
+        SoftLiAwsRequest softLiRequest = new SoftLiAwsRequest("AB-2", "IB-3", "t3.large", "1");
+        ObjectMapper objectToJsonMapper = new ObjectMapper();
+        objectToJsonMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        try {
+            jsonRequest = objectToJsonMapper.writeValueAsString(softLiRequest);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(SoftLiRestController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        System.out.println("\n\nIntegration Testing /reserveRights/aws Post\n\n");
+        mockMvc.perform(post("/reserveRights/aws").content(jsonRequest).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
+                .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));
+
+        System.out.println("Integration Testing /releaseRights/aws Post\n\n");
+        mockMvc.perform(post("/releaseRights/aws").content(jsonRequest).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(StatusMessage.SUCCESS))
+                .andExpect(jsonPath("elements.*.licenseRight.licenseModel.id", hasItem(is("MB-5"))));
+
+    }
 //    @Test
 //    public void testListRights2() throws Exception {
 //        System.out.println("\n\nIntegration Testing /listRights2\n\n");

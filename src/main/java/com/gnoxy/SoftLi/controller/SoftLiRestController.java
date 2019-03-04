@@ -18,8 +18,9 @@ package com.gnoxy.SoftLi.controller;
 import com.gnoxy.SoftLi.am.LicenseRight;
 import com.gnoxy.SoftLi.am.StatusMessage;
 import com.gnoxy.SoftLi.am.LicenseRightsManager;
+import com.gnoxy.SoftLi.data.SoftLiAwsRequest;
 import com.gnoxy.SoftLi.repository.LicenseRightRepository;
-import com.gnoxy.SoftLi.data.SoftLiRequest;
+import com.gnoxy.SoftLi.data.SoftLiStdRequest;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,7 @@ public class SoftLiRestController {
  
     @PostMapping("/reserveRights/std")
     @ResponseBody
-    public StatusMessage pReserve2(@RequestBody SoftLiRequest softLiRequest) {
+    public StatusMessage reserveStd(@RequestBody SoftLiStdRequest softLiRequest) {
         StatusMessage m = new StatusMessage(StatusMessage.NO_STATUS, "Something went wrong");
 //        System.out.println("reserveRightsP/std reqeust body: " + softLiRequest.toString());
         if (lrm != null) {
@@ -93,12 +94,47 @@ public class SoftLiRestController {
 
     @PostMapping("/releaseRights/std")
     @ResponseBody
-    public StatusMessage pRelease(@RequestBody SoftLiRequest softLiRequest) {
+    public StatusMessage releaseStd(@RequestBody SoftLiStdRequest softLiRequest) {
         StatusMessage m = new StatusMessage(StatusMessage.NO_STATUS, "Something went wrong");
         if (lrm != null) {
             m = lrm.releaseRights(softLiRequest.getAppId(), softLiRequest.getImageID(),
                     Long.parseLong(softLiRequest.getvCPUs()),
                     Long.parseLong(softLiRequest.getRam()),
+                    Integer.parseInt(softLiRequest.getInstances()));
+        } else {
+            System.out.println("The LicenseRightsMapper is null");
+        }
+        if (m == null) {
+            System.out.println("Status is null");
+        } 
+        return m;
+    }    
+
+    @PostMapping("/reserveRights/aws")
+    @ResponseBody
+    public StatusMessage reserveAWS(@RequestBody SoftLiAwsRequest softLiRequest) {
+        StatusMessage m = new StatusMessage(StatusMessage.NO_STATUS, "Something went wrong");
+//        System.out.println("reserveRightsP/std reqeust body: " + softLiRequest.toString());
+        if (lrm != null) {
+            m = lrm.reserveRightsAws(softLiRequest.getAppId(), softLiRequest.getImageID(),
+                    softLiRequest.getInstanceType(),
+                    Integer.parseInt(softLiRequest.getInstances()));
+        } else {
+            System.out.println("The LicenseRightsMapper is null");
+        }
+        if (m == null) {
+            System.out.println("Status is null");
+        } 
+        return m;
+    }
+
+    @PostMapping("/releaseRights/aws")
+    @ResponseBody
+    public StatusMessage releaseAWS(@RequestBody SoftLiAwsRequest softLiRequest) {
+        StatusMessage m = new StatusMessage(StatusMessage.NO_STATUS, "Something went wrong");
+        if (lrm != null) {
+            m = lrm.releaseRightsAws(softLiRequest.getAppId(), softLiRequest.getImageID(),
+                    softLiRequest.getInstanceType(),
                     Integer.parseInt(softLiRequest.getInstances()));
         } else {
             System.out.println("The LicenseRightsMapper is null");
@@ -119,6 +155,16 @@ public class SoftLiRestController {
         return lrm.checkRights(appID, imageID,
                 Long.parseLong(vCPUs), Long.parseLong(ram), Integer.parseInt(instances));
     }
+    
+    @RequestMapping("/checkRightsAWS")
+    @ResponseBody
+    public StatusMessage checkAWS(@RequestParam(value = "appID", defaultValue = "0") String appID,
+            @RequestParam(value = "imageID") String imageID,
+            @RequestParam(value = "instanceType") String instanceType,
+            @RequestParam(value = "instances") String instances) {
+        return lrm.checkRightsAws(appID, imageID,
+                instanceType, Integer.parseInt(instances));
+    }    
 
     @RequestMapping("/listRights")
     public List<LicenseRight> list() {
